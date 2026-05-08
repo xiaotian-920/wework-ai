@@ -16,8 +16,8 @@
         .lang-btn.active { background: rgba(255,255,255,0.3); color: white; border-color: white; }
         .lang-btn:hover { background: rgba(255,255,255,0.25); }
 
-        .chat-area { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 12px; }
-        .msg { max-width: 85%; padding: 12px 16px; border-radius: 12px; line-height: 1.6; font-size: 0.92em; animation: fadeIn 0.3s; }
+        .chat-area { flex: 1; overflow-y: auto; padding: 10px 16px 4px; display: flex; flex-direction: column; gap: 12px; }
+        .msg { max-width: 85%; padding: 10px 14px; border-radius: 12px; line-height: 1.5; font-size: 0.9em; animation: fadeIn 0.3s; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
         
         .msg.bot { background: white; align-self: flex-start; border-bottom-left-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
@@ -36,13 +36,13 @@
         .welcome-card h2 { font-size: 1.05em; color: #1a1a2e; margin-bottom: 8px; }
         .welcome-card p, .welcome-card li { color: #555; font-size: 0.88em; line-height: 1.7; }
         .welcome-card ul { padding-left: 18px; }
-        .price-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
-        .price-item { background: #f8f9fa; border-radius: 8px; padding: 12px; text-align: center; }
+        .price-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; margin-top: 6px; }
+        .price-item { background: #f8f9fa; border-radius: 8px; padding: 6px 8px; text-align: center; }
         .price-item .name { font-size: 0.8em; color: #888; }
         .price-item .price { font-size: 1.2em; font-weight: 700; color: #e94560; margin: 2px 0; }
         .price-item .desc { font-size: 0.75em; color: #999; }
         
-        .payment-card { background: white; border-radius: 12px; margin-top: 8px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); overflow: hidden; }
+        .payment-card { background: white; border-radius: 12px; margin-top: 4px; margin-bottom: 60px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); overflow: hidden; }
         .payment-header { padding: 14px 20px; cursor: pointer; font-size: 0.92em; font-weight: 600; color: #1a1a2e; display: flex; justify-content: space-between; align-items: center; user-select: none; }
         .payment-header:hover { background: #f8f9fa; }
         .toggle-icon { transition: transform 0.3s; font-size: 0.85em; }
@@ -75,49 +75,49 @@
     </div>
     
     <div class="reminder-bar" id="reminderBar">
-        <span id="reminderText">⏳ 小天已经为你写好了初稿，查看后满意的话请付款解锁完整版</span>
-        <button id="reminderBtn" onclick="goPay()">去付款</button>
+        <span id="reminderText">�?小天已经为你写好了初稿，查看后满意的话请付款解锁完整�?/span>
+        <button id="reminderBtn" onclick="goPay()">去付�?/button>
     </div>
 
     <div class="chat-area" id="chatArea">
         <div class="msg bot">
             <div class="name">🤖 小天</div>
-            <p id="welcomeMsg">嗨！我是小天，你的AI写作助手 ✨<br><br>告诉我你想写什么，我马上帮你搞定！</p>
+            <p id="welcomeMsg">嗨！我是小天，你的AI写作助手 �?br><br>告诉我你想写什么，我马上帮你搞定！</p>
         </div>
         <div class="welcome-card" id="welcomeCard">
             <h2 id="serviceTitle">📝 我能帮你写：</h2>
             <ul id="serviceList">
-                <li data-i18n="svc1">小红书文案、公众号文章、推广文案</li>
-                <li data-i18n="svc2">商业计划书、演讲稿、简历</li>
-                <li data-i18n="svc3">工作总结、情感故事、品牌故事</li>
-                <li data-i18n="svc4">任何文字需求，说说就行！</li>
+                <li data-i18n="svc1">小红书文案、公众号文章、推广文�?/li>
+                <li data-i18n="svc2">商业计划书、演讲稿、简�?/li>
+                <li data-i18n="svc3">工作总结、情感故事、品牌故�?/li>
+                <li data-i18n="svc4">任何文字需求，说说就行�?/li>
             </ul>
             <div class="price-grid">
-                <div class="price-item"><div class="name" id="p1n">短文</div><div class="price" id="p1p">¥49</div><div class="desc" id="p1d">≤500字</div></div>
-                <div class="price-item"><div class="name" id="p2n">标准</div><div class="price" id="p2p">¥99</div><div class="desc" id="p2d">500-1500字</div></div>
-                <div class="price-item"><div class="name" id="p3n">长文</div><div class="price" id="p3p">¥199</div><div class="desc" id="p3d">1500-3000字</div></div>
-                <div class="price-item"><div class="name" id="p4n">深度</div><div class="price" id="p4p">¥299</div><div class="desc" id="p4d">3000-5000字</div></div>
+                <div class="price-item"><div class="name" id="p1n">短文</div><div class="price" id="p1p">¥49</div><div class="desc" id="p1d">�?00�?/div></div>
+                <div class="price-item"><div class="name" id="p2n">标准</div><div class="price" id="p2p">¥99</div><div class="desc" id="p2d">500-1500�?/div></div>
+                <div class="price-item"><div class="name" id="p3n">长文</div><div class="price" id="p3p">¥199</div><div class="desc" id="p3d">1500-3000�?/div></div>
+                <div class="price-item"><div class="name" id="p4n">深度</div><div class="price" id="p4p">¥299</div><div class="desc" id="p4d">3000-5000�?/div></div>
             </div>
-            <p style="text-align:center;margin-top:8px;color:#999;font-size:0.8em;" id="bulkTip">批量订单私聊报价更优惠</p>
+            <p style="text-align:center;margin-top:8px;color:#999;font-size:0.8em;" id="bulkTip">批量订单私聊报价更优�?/p>
         </div>
         <div class="payment-card" id="paymentCard">
             <div class="payment-header" onclick="togglePayment()">
                 <span id="payHeader">💰 满意后再付款</span>
-                <span class="toggle-icon">▼</span>
+                <span class="toggle-icon">�?/span>
             </div>
-            <div class="payment-body" id="paymentBody">
-                <p style="text-align:left; color:#555; font-size:0.88em; margin-bottom:10px;" id="payDesc">先写稿，满意后扫码付款👇</p>
+            <div class="payment-body open" id="paymentBody">
+                <p style="text-align:left; color:#555; font-size:0.88em; margin-bottom:10px;" id="payDesc">先写稿，满意后扫码付款�?/p>
                 <div class="qr-row" id="zhQrRow">
                     <div class="qr-item">
-                        <img src="/wechat_qr.jpg" alt="微信收款码" class="payment-qr">
+                        <img src="/wechat_qr.jpg" alt="微信收款�? class="payment-qr">
                         <p style="text-align:center; color:#888; font-size:0.75em; margin-top:4px;">💚 <span id="wxLabel">微信支付</span></p>
                     </div>
                     <div class="qr-item">
                         <img src="/alipay_qr.jpg" alt="支付宝收款码" class="payment-qr">
-                        <p style="text-align:center; color:#888; font-size:0.75em; margin-top:4px;">💙 <span id="aliLabel">支付宝</span></p>
+                        <p style="text-align:center; color:#888; font-size:0.75em; margin-top:4px;">💙 <span id="aliLabel">支付�?/span></p>
                     </div>
                 </div>
-                <p style="text-align:center; color:#888; font-size:0.78em; margin-top:6px;" id="payNote">扫码付款 · 备注订单号</p>
+                <p style="text-align:center; color:#888; font-size:0.78em; margin-top:6px;" id="payNote">扫码付款 · 备注订单�?/p>
                 
                 <!-- PayPal Section -->
                 <div class="paypal-section" id="paypalSection">
@@ -128,18 +128,18 @@
                 </div>
 
                 <div class="payment-tip" id="deliveryFlow">
-                    <p>📌 交付流程：</p>
-                    <p id="flow1">① 告诉我你的需求 → ② 我出稿 → ③ 满意后付款 → ④ 无限修改</p>
+                    <p>📌 交付流程�?/p>
+                    <p id="flow1">�?告诉我你的需�?�?�?我出�?�?�?满意后付�?�?�?无限修改</p>
                 </div>
                 <button class="confirm-pay-btn" id="confirmPayBtn" onclick="confirmPaid()"><span id="confirmBtnText">💳 我已付款</span></button>
-                <p id="paidNotice" style="display:none;text-align:center;color:#4caf50;font-size:0.85em;font-weight:600;margin-top:8px;" data-i18n="paidNotice">✅ 收款确认中，完整版马上发送！</p>
+                <p id="paidNotice" style="display:none;text-align:center;color:#4caf50;font-size:0.85em;font-weight:600;margin-top:8px;" data-i18n="paidNotice">�?收款确认中，完整版马上发送！</p>
             </div>
         </div>
     </div>
 
     <div class="input-area">
-        <textarea id="msgInput" rows="1" id="inputPlaceholder" placeholder="输入你的写作需求..." onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMsg()}"></textarea>
-        <button id="sendBtn" onclick="sendMsg()">➤</button>
+        <textarea id="msgInput" rows="1" id="inputPlaceholder" placeholder="输入你的写作需�?.." onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMsg()}"></textarea>
+        <button id="sendBtn" onclick="sendMsg()">�?/button>
     </div>
 
     <script>
@@ -151,45 +151,45 @@
             zh: {
                 title: '✍️ 小天 · AI写作',
                 sub: '24小时在线 · 无限修改 · 先写后付',
-                welcome: '嗨！我是小天，你的AI写作助手 ✨<br><br>告诉我你想写什么，我马上帮你搞定！',
+                welcome: '嗨！我是小天，你的AI写作助手 �?br><br>告诉我你想写什么，我马上帮你搞定！',
                 svcTitle: '📝 我能帮你写：',
-                svc1: '小红书文案、公众号文章、推广文案',
-                svc2: '商业计划书、演讲稿、简历',
-                svc3: '工作总结、情感故事、品牌故事',
-                svc4: '任何文字需求，说说就行！',
-                p1n: '短文', p1p: '¥49', p1d: '≤500字',
-                p2n: '标准', p2p: '¥99', p2d: '500-1500字',
-                p3n: '长文', p3p: '¥199', p3d: '1500-3000字',
-                p4n: '深度', p4p: '¥299', p4d: '3000-5000字',
-                bulk: '批量订单私聊报价更优惠',
+                svc1: '小红书文案、公众号文章、推广文�?,
+                svc2: '商业计划书、演讲稿、简�?,
+                svc3: '工作总结、情感故事、品牌故�?,
+                svc4: '任何文字需求，说说就行�?,
+                p1n: '短文', p1p: '¥49', p1d: '�?00�?,
+                p2n: '标准', p2p: '¥99', p2d: '500-1500�?,
+                p3n: '长文', p3p: '¥199', p3d: '1500-3000�?,
+                p4n: '深度', p4p: '¥299', p4d: '3000-5000�?,
+                bulk: '批量订单私聊报价更优�?,
                 payHeader: '💰 满意后再付款',
-                payDesc: '先写稿，满意后扫码付款👇',
-                wx: '微信支付', ali: '支付宝',
-                payNote: '扫码付款 · 备注订单号',
+                payDesc: '先写稿，满意后扫码付款�?,
+                wx: '微信支付', ali: '支付�?,
+                payNote: '扫码付款 · 备注订单�?,
                 paypalDesc: '🌍 海外客户：使用PayPal付款',
-                paypalEmail: '📧 请付款至：260083314@163.com',
-                paypalNote: '付款后点击下方"我已付款"按钮确认',
+                paypalEmail: '📧 请付款至�?60083314@163.com',
+                paypalNote: '付款后点击下�?我已付款"按钮确认',
                 paypalBtn: '💳 通过PayPal付款',
-                flowTitle: '📌 交付流程：',
-                flow1: '① 告诉我你的需求 → ② 我出稿 → ③ 满意后付款 → ④ 无限修改',
+                flowTitle: '📌 交付流程�?,
+                flow1: '�?告诉我你的需�?�?�?我出�?�?�?满意后付�?�?�?无限修改',
                 confirmBtn: '💳 我已付款',
-                paidNotice: '✅ 收款确认中，完整版马上发送！',
-                reminder: '⏳ 小天已经为你写好了初稿，查看后满意的话请付款解锁完整版',
-                inputPh: '输入你的写作需求...',
-                goPay: '去付款',
+                paidNotice: '�?收款确认中，完整版马上发送！',
+                reminder: '�?小天已经为你写好了初稿，查看后满意的话请付款解锁完整�?,
+                inputPh: '输入你的写作需�?..',
+                goPay: '去付�?,
                 msgSent: '收到你的消息啦！✍️ 我正在看你的需求，稍等片刻马上回复你～',
-                msgFail: '抱歉，消息发送失败，请重试 🙏'
+                msgFail: '抱歉，消息发送失败，请重�?🙏'
             },
             en: {
                 title: '✍️ XiaoTian · AI Writing',
                 sub: '24/7 Online · Unlimited Revisions · Pay After Satisfaction',
-                welcome: 'Hi! I\'m XiaoTian, your AI writing assistant ✨<br><br>Tell me what you need written, and I\'ll get it done!',
+                welcome: 'Hi! I\'m XiaoTian, your AI writing assistant �?br><br>Tell me what you need written, and I\'ll get it done!',
                 svcTitle: '📝 I can write:',
                 svc1: 'Social media posts, blog articles, marketing copy',
                 svc2: 'Business plans, speeches, resumes',
                 svc3: 'Work summaries, stories, brand narratives',
                 svc4: 'Anything text-related - just tell me!',
-                p1n: 'Short', p1p: '$7', p1d: '≤500 words',
+                p1n: 'Short', p1p: '$7', p1d: '�?00 words',
                 p2n: 'Standard', p2p: '$14', p2d: '500-1500 words',
                 p3n: 'Long', p3p: '$28', p3d: '1500-3000 words',
                 p4n: 'In-Depth', p4p: '$42', p4d: '3000-5000 words',
@@ -203,10 +203,10 @@
                 paypalNote: 'After paying, click "I\'ve Paid" below to confirm',
                 paypalBtn: '💳 Pay with PayPal',
                 flowTitle: '📌 How it works:',
-                flow1: '① Tell me your needs → ② I write it → ③ Pay if satisfied → ④ Free revisions',
+                flow1: '�?Tell me your needs �?�?I write it �?�?Pay if satisfied �?�?Free revisions',
                 confirmBtn: '💳 I\'ve Paid',
-                paidNotice: '✅ Payment confirmed! Full version coming right up!',
-                reminder: '⏳ Your draft is ready! If satisfied, please complete payment to unlock the full version',
+                paidNotice: '�?Payment confirmed! Full version coming right up!',
+                reminder: '�?Your draft is ready! If satisfied, please complete payment to unlock the full version',
                 inputPh: 'Describe what you need written...',
                 goPay: 'Pay Now',
                 msgSent: 'Got your message! ✍️ Let me take a look and I\'ll get back to you shortly~',
@@ -340,7 +340,7 @@
 
         async function confirmPaid() {
             const t = i18n[currentLang];
-            if (confirm(currentLang === 'zh' ? '确认已付款？将为你解锁完整文稿。' : 'Confirm payment? Full document will be delivered.')) {
+            if (confirm(currentLang === 'zh' ? '确认已付款？将为你解锁完整文稿�? : 'Confirm payment? Full document will be delivered.')) {
                 try {
                     await fetch('/api/paid', {
                         method: 'POST',
@@ -357,7 +357,7 @@
             const body = document.getElementById('paymentBody');
             const icon = document.querySelector('.toggle-icon');
             body.classList.toggle('open');
-            icon.textContent = body.classList.contains('open') ? '▲' : '▼';
+            icon.textContent = body.classList.contains('open') ? '�? : '�?;
         }
 
         function goPay() {
@@ -366,7 +366,7 @@
             const icon = document.querySelector('.toggle-icon');
             if (!body.classList.contains('open')) {
                 body.classList.add('open');
-                icon.textContent = '▲';
+                icon.textContent = '�?;
             }
         }
 
@@ -378,3 +378,4 @@
     </script>
 </body>
 </html>
+
