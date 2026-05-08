@@ -7,9 +7,9 @@ RUN apt-get update -qq && apt-get install -qqy --no-install-recommends git opens
 
 RUN npm install -g openclaw@latest
 
-# Create OpenClaw config that works in headless/cloud mode
+# Create OpenClaw config
 RUN mkdir -p /root/.openclaw
-RUN echo '{"commands":{"native":"auto","nativeSkills":"auto","restart":true},"tools":{"profile":"full"},"gateway":{"mode":"local","port":49982,"auth":{"mode":"token","token":"openclaw1234"}},"plugins":{"entries":{}},"skills":{"entries":{}}}' > /root/.openclaw/openclaw.json
+RUN echo '{"commands":{"native":"auto","nativeSkills":"auto","restart":true},"tools":{"profile":"full"},"gateway":{"mode":"local","port":49982,"controlUi":{"allowedOrigins":["null","https://wework-ai-production.up.railway.app"]},"auth":{"mode":"token","token":"openclaw1234"}},"plugins":{"entries":{}},"skills":{"entries":{}}}' > /root/.openclaw/openclaw.json
 
 WORKDIR /data
 
