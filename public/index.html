@@ -13,7 +13,6 @@
             --accent: #ff3b30;
             --accent2: #007aff;
             --border: #e5e5ea;
-            --shadow: 0 2px 12px rgba(0,0,0,0.06);
             --radius: 18px;
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -21,13 +20,10 @@
             font-family: -apple-system, "PingFang SC", "SF Pro Text", "Segoe UI", sans-serif;
             background: var(--bg);
             color: var(--text);
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
+            height: 100vh; display: flex;
+            flex-direction: column; overflow: hidden;
         }
 
-        /* Header - iOS style */
         .header {
             background: rgba(255,255,255,0.92);
             backdrop-filter: blur(30px);
@@ -36,7 +32,7 @@
             padding: 14px 16px 12px;
             text-align: center;
             position: relative;
-            flex-shrink: 0;
+            flex-shrink: 0; z-index: 10;
         }
         .header h1 { font-size: 17px; font-weight: 700; color: var(--text); letter-spacing: -0.3px; }
         .header p { font-size: 12px; color: var(--text2); margin-top: 1px; }
@@ -48,20 +44,20 @@
         }
         .lang-btn.active { background: var(--accent); color: white; }
 
-        /* Chat - iMessage style */
         .chat-area {
             flex: 1; overflow-y: auto; padding: 8px 14px 20px;
             display: flex; flex-direction: column; gap: 6px;
             -webkit-overflow-scrolling: touch;
+            padding-bottom: 120px;
         }
         .chat-area::-webkit-scrollbar { width: 3px; }
         .chat-area::-webkit-scrollbar-thumb { background: #c7c7cc; border-radius: 3px; }
 
         .msg {
-            max-width: 78%;
+            max-width: 80%;
             padding: 10px 15px;
             border-radius: var(--radius);
-            line-height: 1.5;
+            line-height: 1.55;
             font-size: 15px;
             animation: msgIn 0.25s ease;
             word-break: break-word;
@@ -84,6 +80,19 @@
             font-weight: 700;
             margin-bottom: 2px;
         }
+        .msg.bot .pay-link {
+            display: inline-block;
+            margin-top: 8px;
+            background: var(--accent);
+            color: white; text-decoration: none;
+            border-radius: 20px;
+            padding: 8px 18px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .msg.bot .pay-link:active { opacity: 0.7; }
 
         .msg.user {
             background: var(--accent);
@@ -98,8 +107,7 @@
             border-radius: var(--radius);
             border-bottom-left-radius: 4px;
             padding: 12px 18px;
-            display: flex;
-            gap: 4px;
+            display: flex; gap: 4px;
             align-items: center;
         }
         .typing-indicator span {
@@ -116,19 +124,13 @@
             40% { transform: scale(1); }
         }
 
-        /* Cards */
         .card {
             background: var(--card);
             border-radius: 14px;
             padding: 16px 18px;
-            box-shadow: var(--shadow);
-            margin-top: 6px;
+            border: 0.5px solid var(--border);
         }
         .card h3 { font-size: 15px; font-weight: 700; margin-bottom: 8px; color: var(--text); }
-        .card p, .card li { color: #555; font-size: 14px; line-height: 1.7; }
-        .card ul { padding-left: 0; list-style: none; }
-        .card ul li { padding: 3px 0 3px 18px; position: relative; }
-        .card ul li::before { content: "\2B50"; position: absolute; left: -2px; top: 3px; font-size: 11px; }
 
         .price-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 8px; }
         .price-item {
@@ -139,99 +141,81 @@
             border: 1px solid transparent;
             transition: all 0.2s;
         }
-        .price-item:hover { border-color: var(--accent); }
         .price-item .lbl { font-size: 11px; color: var(--text2); font-weight: 500; }
         .price-item .num { font-size: 20px; font-weight: 800; color: var(--accent); margin: 1px 0; letter-spacing: -0.5px; }
         .price-item .dsc { font-size: 11px; color: #aaa; }
 
-        .qr-row { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
-        .qr-item { flex: 1; min-width: 120px; max-width: 180px; text-align: center; }
-        .qr-item img { width: 100%; border-radius: 10px; border: 1.5px solid #eee; }
-        .qr-item .lbl { font-size: 12px; color: var(--text2); margin-top: 4px; }
+        /* Payment section - sticky at bottom */
+        .pay-section {
+            background: white;
+            border-top: 0.5px solid var(--border);
+            padding: 12px 16px 14px;
+            flex-shrink: 0;
+            max-height: 50vh;
+            overflow-y: auto;
+        }
+        .pay-section .qr-row { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+        .pay-section .qr-item { flex: 1; min-width: 90px; max-width: 140px; text-align: center; }
+        .pay-section .qr-item img { width: 100%; border-radius: 10px; border: 1px solid #eee; }
+        .pay-section .qr-item .lbl { font-size: 11px; color: var(--text2); margin-top: 3px; }
 
         .paypal-box {
             background: linear-gradient(135deg, #f0f7ff, #e8f4ff);
-            border: 1px solid #cce5ff;
             border-radius: 10px;
-            padding: 12px;
+            padding: 10px;
+            font-size: 13px;
+            text-align: center;
+            margin-top: 6px;
         }
-        .paypal-box p { font-size: 13px; color: #444; }
         .paypal-btn {
             display: inline-block;
-            background: #0070ba;
-            color: white; text-decoration: none;
-            border-radius: 20px;
-            padding: 8px 18px;
-            font-size: 13px;
-            font-weight: 600;
-            margin-top: 6px;
-            transition: all 0.2s;
+            background: #0070ba; color: white; text-decoration: none;
+            border-radius: 20px; padding: 7px 16px;
+            font-size: 13px; font-weight: 600;
+            margin-top: 4px;
         }
-        .paypal-btn:hover { background: #003087; transform: scale(1.02); }
-
-        .flow-steps {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 4px;
-            font-size: 12px;
-            color: #555;
-            margin-top: 2px;
-        }
-        .flow-steps .step {
-            background: #f8f9fa;
-            border-radius: 20px;
-            padding: 4px 10px;
-            white-space: nowrap;
-        }
-        .flow-steps .arrow { color: #ccc; padding: 4px 2px; }
 
         .confirm-btn {
             display: block; width: 100%;
             background: linear-gradient(135deg, #f5af19, #f12711);
             color: white; border: none;
             border-radius: 22px;
-            padding: 13px;
-            font-size: 16px;
+            padding: 12px;
+            font-size: 15px;
             font-weight: 700;
             cursor: pointer;
-            transition: all 0.2s;
-            letter-spacing: 1px;
+            margin-top: 6px;
         }
-        .confirm-btn:hover { opacity: 0.9; transform: scale(1.01); }
         .paid-badge {
             color: #34c759;
             font-size: 14px;
             font-weight: 600;
             text-align: center;
-            padding: 8px 0;
+            padding: 6px 0;
         }
 
-        /* Reminder bar */
-        .reminder-bar {
-            background: #fff8e1;
-            color: #8d6e00;
-            padding: 8px 14px;
-            font-size: 13px;
+        /* Floating pay button */
+        .float-pay {
+            position: fixed;
+            bottom: 80px;
+            right: 16px;
+            z-index: 100;
+            background: linear-gradient(135deg, #f5af19, #f12711);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 56px;
+            height: 56px;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 4px 16px rgba(241,39,17,0.35);
             display: none;
             align-items: center;
-            gap: 8px;
-            border-bottom: 0.5px solid #ffe082;
-            flex-shrink: 0;
+            justify-content: center;
+            transition: all 0.2s;
         }
-        .reminder-bar.show { display: flex; }
-        .reminder-bar button {
-            background: var(--accent);
-            color: white; border: none;
-            border-radius: 16px;
-            padding: 5px 14px;
-            font-size: 12px;
-            font-weight: 600;
-            cursor: pointer;
-            margin-left: auto;
-            flex-shrink: 0;
-        }
+        .float-pay:active { transform: scale(0.9); }
 
-        /* Input area - iOS style */
         .input-area {
             background: white;
             padding: 8px 12px 12px;
@@ -254,106 +238,85 @@
             max-height: 80px;
             line-height: 1.4;
         }
-        .input-area textarea:focus { background: #e9e9eb; }
         .input-area button {
-            background: var(--accent);
-            color: white; border: none;
-            border-radius: 50%;
-            width: 36px; height: 36px;
-            font-size: 16px;
-            cursor: pointer;
+            background: var(--accent); color: white; border: none;
+            border-radius: 50%; width: 36px; height: 36px;
+            font-size: 16px; cursor: pointer;
             flex-shrink: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.15s;
+            display: flex; align-items: center; justify-content: center;
         }
         .input-area button:disabled { opacity: 0.4; cursor: not-allowed; }
-        .input-area button:active { transform: scale(0.9); }
 
         @media (max-width: 400px) {
-            .price-grid { grid-template-columns: 1fr 1fr; }
-            .card { padding: 14px; }
-            .msg { font-size: 14px; padding: 9px 13px; }
+            .pay-section .qr-item { min-width: 70px; max-width: 120px; }
         }
     </style>
 </head>
 <body>
     <div class="header">
-        <h1 id="siteTitle">&#x1F5E8;&#xFE0F; 小天 &middot; AI写作</h1>
-        <p id="siteSub">在线 &middot; 无限修改 &middot; 先写后付</p>
+        <h1 id="siteTitle">🗨️ 小天 · AI写作</h1>
+        <p id="siteSub">在线 · 无限修改 · 先写后付</p>
         <div class="lang-switch">
             <button class="lang-btn active" data-lang="zh" onclick="switchLang('zh')">中文</button>
             <button class="lang-btn" data-lang="en" onclick="switchLang('en')">EN</button>
         </div>
     </div>
 
-    <div class="reminder-bar" id="reminderBar">
-        <span id="reminderText">&#x23F3; 小天已写好了初稿，满意的话请付款解锁完整版</span>
-        <button id="reminderBtn" onclick="goPay()">去付款</button>
-    </div>
-
     <div class="chat-area" id="chatArea">
         <div class="msg bot" id="welcomeMsg">
-            <div class="name">&#x1F916; 小天</div>
-            <p id="welcomeText">嗨！我是小天，你的AI写作助手 &#x2728;<br><br>告诉我你想写什么，我马上帮你搞定！</p>
+            <div class="name">🤖 小天</div>
+            <p id="welcomeText">嗨！我是小天，你的AI写作助手 ✨<br><br>告诉我你想写什么，我马上帮你搞定！</p>
         </div>
 
         <div class="card">
-            <h3 id="svcTitle">&#x1F4DD; 我能帮你写</h3>
-            <ul id="svcList">
-                <li>小红书文案、公众号文章、推广文案</li>
-                <li>商业计划书、演讲稿、简历</li>
-                <li>工作总结、情感故事、品牌故事</li>
-                <li>任何文字需求，说说就行！</li>
+            <h3 id="svcTitle">📝 我能帮你写</h3>
+            <ul id="svcList" style="list-style:none;padding:0;font-size:14px;color:#555;line-height:1.8;">
+                <li>⭐ 小红书文案、公众号文章、推广文案</li>
+                <li>⭐ 商业计划书、演讲稿、简历</li>
+                <li>⭐ 工作总结、情感故事、品牌故事</li>
+                <li>⭐ 任何文字需求，说说就行！</li>
             </ul>
             <div class="price-grid">
-                <div class="price-item"><div class="lbl" id="pn1">短文</div><div class="num" id="pp1">&#x00A5;49</div><div class="dsc" id="pd1">&le;500字</div></div>
-                <div class="price-item"><div class="lbl" id="pn2">标准</div><div class="num" id="pp2">&#x00A5;99</div><div class="dsc" id="pd2">500-1500字</div></div>
-                <div class="price-item"><div class="lbl" id="pn3">长文</div><div class="num" id="pp3">&#x00A5;199</div><div class="dsc" id="pd3">1500-3000字</div></div>
-                <div class="price-item"><div class="lbl" id="pn4">深度</div><div class="num" id="pp4">&#x00A5;299</div><div class="dsc" id="pd4">3000-5000字</div></div>
+                <div class="price-item"><div class="lbl" id="pn1">短文</div><div class="num" id="pp1">¥49</div><div class="dsc" id="pd1">≤500字</div></div>
+                <div class="price-item"><div class="lbl" id="pn2">标准</div><div class="num" id="pp2">¥99</div><div class="dsc" id="pd2">500-1500字</div></div>
+                <div class="price-item"><div class="lbl" id="pn3">长文</div><div class="num" id="pp3">¥199</div><div class="dsc" id="pd3">1500-3000字</div></div>
+                <div class="price-item"><div class="lbl" id="pn4">深度</div><div class="num" id="pp4">¥299</div><div class="dsc" id="pd4">3000-5000字</div></div>
             </div>
             <p style="text-align:center;margin-top:6px;font-size:12px;color:#aaa;" id="bulkTip">批量订单私聊报价更优惠</p>
         </div>
+    </div>
 
-        <div class="card">
-            <h3 id="payTitle">&#x1F4B0; 满意后再付款</h3>
-            <div>
-                <p style="font-size:13px;color:#555;margin-bottom:10px;" id="payDesc">先写稿，满意后扫码付款 &#x1F447;</p>
-                <div class="qr-row">
-                    <div class="qr-item">
-                        <img src="/wechat_qr.jpg" alt="">
-                        <p class="lbl">&#x1F49A; <span id="wxLabel">微信支付</span></p>
-                    </div>
-                    <div class="qr-item">
-                        <img src="/alipay_qr.jpg" alt="">
-                        <p class="lbl">&#x1F499; <span id="aliLabel">支付宝</span></p>
-                    </div>
-                </div>
-                <p style="text-align:center;font-size:11px;color:#aaa;margin:8px 0;" id="payNote">扫码付款 &middot; 备注订单号</p>
-                <div class="paypal-box">
-                    <p id="ppDesc">&#x1F30D; <strong>海外客户：PayPal付款</strong></p>
-                    <p style="margin-top:1px;font-size:12px;color:#666;" id="ppEmail">发送至：<strong>260083314@163.com</strong></p>
-                    <a href="https://paypal.me/mingming37" target="_blank" class="paypal-btn" id="ppBtn">&#x1F4B3; Pay with PayPal</a>
-                </div>
-                <div class="flow-steps">
-                    <span class="step" id="fs1">&#x2776; 告诉我需求</span>
-                    <span class="arrow">&#x2192;</span>
-                    <span class="step" id="fs2">&#x2777; 我出稿</span>
-                    <span class="arrow">&#x2192;</span>
-                    <span class="step" id="fs3">&#x2778; 满意后付款</span>
-                    <span class="arrow">&#x2192;</span>
-                    <span class="step" id="fs4">&#x2779; 无限修改</span>
-                </div>
-                <button class="confirm-btn" id="confirmBtn" onclick="confirmPaid()"><span id="confirmText">&#x1F4B3; 我已付款</span></button>
-                <p class="paid-badge" id="paidNotice" style="display:none;">&#x2705; 收款确认中，完整版马上发送！</p>
+    <!-- Fixed payment section at bottom -->
+    <div class="pay-section" id="paySection">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+            <span style="font-size:15px;font-weight:700;" id="payTitle">💰 满意后再付款</span>
+            <span style="font-size:12px;color:#666;" id="payDesc">先写稿，满意再付</span>
+        </div>
+        <div class="qr-row">
+            <div class="qr-item">
+                <img src="/wechat_qr.jpg" alt="">
+                <p class="lbl">💚 <span id="wxLabel">微信支付</span></p>
+            </div>
+            <div class="qr-item">
+                <img src="/alipay_qr.jpg" alt="">
+                <p class="lbl">💙 <span id="aliLabel">支付宝</span></p>
             </div>
         </div>
+        <div class="paypal-box">
+            <p id="ppDesc">🌍 <strong>海外客户：PayPal付款</strong></p>
+            <p id="ppEmail" style="margin-top:2px;font-size:12px;color:#666;">发送至：<strong>260083314@163.com</strong></p>
+            <a href="https://paypal.me/mingming37" target="_blank" class="paypal-btn" id="ppBtn">💳 Pay with PayPal</a>
+        </div>
+        <button class="confirm-btn" id="confirmBtn" onclick="confirmPaid()"><span id="confirmText">💳 我已付款</span></button>
+        <p class="paid-badge" id="paidNotice" style="display:none;">✅ 收款确认中，完整版马上发送！</p>
     </div>
+
+    <!-- Floating pay button -->
+    <button class="float-pay" id="floatPay" onclick="scrollToPay()">💰</button>
 
     <div class="input-area">
         <textarea id="msgInput" rows="1" placeholder="输入你的写作需求..." onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMsg()}"></textarea>
-        <button id="sendBtn" onclick="sendMsg()">&#x2191;</button>
+        <button id="sendBtn" onclick="sendMsg()">↑</button>
     </div>
 
     <script>
@@ -363,66 +326,55 @@
 
         var i18n = {
             zh: {
-                title: '\uD83D\uDDE8\uFE0F 小天 \u00B7 AI写作',
-                sub: '在线 \u00B7 无限修改 \u00B7 先写后付',
-                welcome: '嗨！我是小天，你的AI写作助手 \u2728<br><br>告诉我你想写什么，我马上帮你搞定！',
-                svc: '\uD83D\uDCDD 我能帮你写',
+                title: '🗨️ 小天 · AI写作',
+                sub: '在线 · 无限修改 · 先写后付',
+                welcome: '嗨！我是小天，你的AI写作助手 ✨<br><br>告诉我你想写什么，我马上帮你搞定！',
+                svc: '📝 我能帮你写',
                 s1:'小红书文案、公众号文章、推广文案', s2:'商业计划书、演讲稿、简历', s3:'工作总结、情感故事、品牌故事', s4:'任何文字需求，说说就行！',
                 p1:'短文', p2:'标准', p3:'长文', p4:'深度',
-                pp1:'\u00A549', pp2:'\u00A599', pp3:'\u00A5199', pp4:'\u00A5299',
-                pd1:'\u2264500字', pd2:'500-1500字', pd3:'1500-3000字', pd4:'3000-5000字',
+                pp1:'¥49', pp2:'¥99', pp3:'¥199', pp4:'¥299',
+                pd1:'≤500字', pd2:'500-1500字', pd3:'1500-3000字', pd4:'3000-5000字',
                 bulk:'批量订单私聊报价更优惠',
-                pay:'\uD83D\uDCB0 满意后再付款',
-                payDesc:'先写稿，满意后扫码付款 \uD83D\uDC47',
+                payDesc:'先写稿，满意再付',
                 wx:'微信支付', ali:'支付宝',
-                payNote:'扫码付款 \u00B7 备注订单号',
-                ppDesc:'\uD83C\uDF0D 海外客户：PayPal付款',
+                ppDesc:'🌍 海外客户：PayPal付款',
                 ppEmail:'发送至：260083314@163.com',
-                ppBtn:'\uD83D\uDCB3 Pay with PayPal',
-                fs1:'\u2776 告诉我需求', fs2:'\u2777 我出稿', fs3:'\u2778 满意后付款', fs4:'\u2779 无限修改',
-                confirm:'\uD83D\uDCB3 我已付款',
-                paid:'\u2705 收款确认中，完整版马上发送！',
-                reminder:'\u23F3 小天已写好了初稿，满意的话请付款解锁完整版',
-                goPay:'去付款',
+                ppBtn:'💳 Pay with PayPal',
+                confirm:'💳 我已付款',
+                paid:'✅ 收款确认中，完整版马上发送！',
                 inputPh:'输入你的写作需求...',
-                msgSent:'收到你的消息啦！\u270D\uFE0F 我正在看你的需求，稍等片刻马上回复你～',
-                msgFail:'抱歉，消息发送失败，请重试 \uD83D\uDE4F',
-                typing:''
+                msgSent:'收到你的消息啦！✍️ 我正在看你的需求，稍等片刻马上回复你～',
+                msgFail:'抱歉，消息发送失败，请重试 🙏',
+                goPay:'💰 满意付款 →'
             },
             en: {
-                title: '\uD83D\uDDE8\uFE0F XiaoTian \u00B7 AI Writing',
-                sub: 'Online \u00B7 Unlimited Revisions \u00B7 Pay After Satisfaction',
-                welcome: 'Hi! I\'m XiaoTian, your AI writing assistant \u2728<br><br>Tell me what you need written, and I\'ll get it done!',
-                svc: '\uD83D\uDCDD I can write',
+                title: '🗨️ XiaoTian · AI Writing',
+                sub: 'Online · Unlimited Revisions · Pay After Satisfaction',
+                welcome: 'Hi! I\'m XiaoTian, your AI writing assistant ✨<br><br>Tell me what you need written, and I\'ll get it done!',
+                svc: '📝 I can write',
                 s1:'Social media posts, blog articles, marketing copy', s2:'Business plans, speeches, resumes', s3:'Work summaries, stories, brand stories', s4:'Anything text-related - just tell me!',
                 p1:'Short', p2:'Standard', p3:'Long', p4:'In-Depth',
                 pp1:'$7', pp2:'$14', pp3:'$28', pp4:'$42',
-                pd1:'\u2264500 words', pd2:'500-1500 words', pd3:'1500-3000 words', pd4:'3000-5000 words',
+                pd1:'≤500 words', pd2:'500-1500 words', pd3:'1500-3000 words', pd4:'3000-5000 words',
                 bulk:'Bulk orders: DM for special pricing',
-                pay:'\uD83D\uDCB0 Pay After Satisfaction',
-                payDesc:'Preview first, pay if satisfied \uD83D\uDC47',
+                payDesc:'Preview first, pay if satisfied',
                 wx:'WeChat Pay', ali:'Alipay',
-                payNote:'Scan to pay \u00B7 Include order number',
-                ppDesc:'\uD83C\uDF0D International: Pay with PayPal',
+                ppDesc:'🌍 International: Pay with PayPal',
                 ppEmail:'Send to: 260083314@163.com',
-                ppBtn:'\uD83D\uDCB3 Pay with PayPal',
-                fs1:'\u2776 Tell needs', fs2:'\u2777 I write', fs3:'\u2778 Pay if happy', fs4:'\u2779 Free revisions',
-                confirm:'\uD83D\uDCB3 I\'ve Paid',
-                paid:'\u2705 Payment confirmed! Full version coming right up!',
-                reminder:'\u23F3 Your draft is ready! Pay to unlock the full version',
-                goPay:'Pay Now',
+                ppBtn:'💳 Pay with PayPal',
+                confirm:'💳 I\'ve Paid',
+                paid:'✅ Payment confirmed! Full version coming right up!',
                 inputPh:'Describe what you need written...',
-                msgSent:'Got your message! \u270D\uFE0F Let me take a look and I\'ll get back to you shortly~',
-                msgFail:'Sorry, message failed to send. Please try again \uD83D\uDE4F',
-                typing:''
+                msgSent:'Got your message! ✍️ Let me take a look and I\'ll get back to you shortly~',
+                msgFail:'Sorry, message failed to send. Please try again 🙏',
+                goPay:'💰 Pay Now →'
             }
         };
 
         function switchLang(lang) {
             currentLang = lang;
             localStorage.setItem('lang', lang);
-            var btns = document.querySelectorAll('.lang-btn');
-            for(var b=0; b<btns.length; b++) btns[b].classList.toggle('active', btns[b].dataset.lang === lang);
+            document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.dataset.lang === lang));
             applyLang(lang);
         }
         function applyLang(lang) {
@@ -431,30 +383,17 @@
             document.getElementById('siteSub').textContent = t.sub;
             document.getElementById('welcomeText').innerHTML = t.welcome;
             document.getElementById('svcTitle').textContent = t.svc;
-            var lis = document.querySelectorAll('#svcList li');
-            for(var i=0;i<lis.length;i++) lis[i].textContent = t['s'+(i+1)];
-            for(var i=1;i<=4;i++) {
-                document.getElementById('pn'+i).textContent = t['p'+i];
-                document.getElementById('pp'+i).textContent = t['pp'+i];
-                document.getElementById('pd'+i).textContent = t['pd'+i];
-            }
+            document.querySelectorAll('#svcList li').forEach((li,i) => li.textContent = '⭐ ' + t['s'+(i+1)]);
+            ['pn','pp','pd'].forEach(p => { for(var i=1;i<=4;i++) document.getElementById(p+i).textContent = t[p+i]; });
             document.getElementById('bulkTip').textContent = t.bulk;
-            document.getElementById('payTitle').textContent = t.pay;
             document.getElementById('payDesc').textContent = t.payDesc;
             document.getElementById('wxLabel').textContent = t.wx;
             document.getElementById('aliLabel').textContent = t.ali;
-            document.getElementById('payNote').textContent = t.payNote;
             document.getElementById('ppDesc').textContent = t.ppDesc;
             document.getElementById('ppEmail').textContent = t.ppEmail;
             document.getElementById('ppBtn').textContent = t.ppBtn;
-            document.getElementById('fs1').textContent = t.fs1;
-            document.getElementById('fs2').textContent = t.fs2;
-            document.getElementById('fs3').textContent = t.fs3;
-            document.getElementById('fs4').textContent = t.fs4;
             document.getElementById('confirmText').textContent = t.confirm;
             document.getElementById('paidNotice').textContent = t.paid;
-            document.getElementById('reminderText').textContent = t.reminder;
-            document.getElementById('reminderBtn').textContent = t.goPay;
             document.getElementById('msgInput').placeholder = t.inputPh;
         }
         switchLang(localStorage.getItem('lang') || 'zh');
@@ -463,11 +402,12 @@
         var msgInput = document.getElementById('msgInput');
         var sendBtn = document.getElementById('sendBtn');
 
-        function addMessage(role, text) {
+        function addMessage(role, text, showPay) {
             var div = document.createElement('div');
             div.className = 'msg ' + role;
             if(role === 'bot') {
-                div.innerHTML = '<div class="name">\uD83E\uDD16 小天</div><p>' + text.replace(/\n/g, '<br>') + '</p>';
+                var payBtn = showPay ? '<br><a class="pay-link" onclick="scrollToPay()">💰 满意付款 →</a>' : '';
+                div.innerHTML = '<div class="name">🤖 小天</div><p>' + text.replace(/\n/g, '<br>') + payBtn + '</p>';
             } else {
                 div.innerHTML = '<p>' + text.replace(/\n/g, '<br>') + '</p>';
             }
@@ -499,7 +439,10 @@
                 });
                 var data = await res.json();
                 hideTyping();
-                if(data.ok) addMessage('bot', i18n[currentLang].msgSent);
+                if(data.ok) {
+                    addMessage('bot', i18n[currentLang].msgSent);
+                    document.getElementById('floatPay').style.display = 'flex';
+                }
             } catch(e) {
                 hideTyping();
                 addMessage('bot', i18n[currentLang].msgFail);
@@ -512,16 +455,24 @@
             try {
                 var res = await fetch('/api/messages/' + visitorId);
                 var msgs = await res.json();
-                if(msgs.length > 0) {
-                    var toRemove = document.querySelectorAll('#welcomeMsg, .card');
-                    for(var i=0;i<toRemove.length;i++) toRemove[i].remove();
-                    for(var m=0;m<msgs.length;m++) addMessage(msgs[m].role === 'user' ? 'user' : 'bot', msgs[m].content);
+                // Check if there are AI replies - remove welcome/cards and show history
+                if(msgs.length > 2) {
+                    document.querySelectorAll('#welcomeMsg, .card').forEach(e => e.remove());
+                    var hasPaySuggestion = false;
+                    for(var m=0; m<msgs.length; m++) {
+                        var isAI = msgs[m].role === 'assistant';
+                        addMessage(isAI ? 'bot' : 'user', msgs[m].content, isAI);
+                        if(isAI && msgs[m].content.length > 50) hasPaySuggestion = true;
+                    }
+                    if(hasPaySuggestion) {
+                        document.getElementById('floatPay').style.display = 'flex';
+                    }
                 }
             } catch(e) {}
         }
 
         async function confirmPaid() {
-            if(!confirm(currentLang==='zh'?'确认已付款？':'Confirm payment?')) return;
+            if(!confirm(currentLang === 'zh' ? '确认已付款？' : 'Confirm payment?')) return;
             try {
                 await fetch('/api/paid', {
                     method: 'POST',
@@ -530,15 +481,13 @@
                 });
                 document.getElementById('confirmBtn').style.display = 'none';
                 document.getElementById('paidNotice').style.display = 'block';
-            } catch(e) { alert(currentLang==='zh'?'操作失败':'Failed'); }
+                document.getElementById('floatPay').style.display = 'none';
+                addMessage('bot', currentLang === 'zh' ? '✅ 收款确认成功！🎉 感谢信任！完整版文稿已发送，有任何修改需求随时告诉我，无限修改！🙏' : '✅ Payment confirmed! 🎉 Full version delivered! Free revisions anytime! 🙏');
+            } catch(e) { alert(currentLang === 'zh' ? '操作失败' : 'Failed'); }
         }
 
-        function goPay() {
-            document.getElementById('payCard').scrollIntoView({behavior:'smooth'});
-        }
-
-        function showReminder() {
-            document.getElementById('reminderBar').classList.add('show');
+        function scrollToPay() {
+            document.getElementById('paySection').scrollIntoView({behavior:'smooth'});
         }
 
         loadMessages();
