@@ -6,3 +6,5 @@ RUN pnpm install -g clawhub@latest
 WORKDIR /data
 EXPOSE 49982 80
 CMD ["openclaw", "gateway"]
+
+# Deploy to Railway - Auto deploy on push
