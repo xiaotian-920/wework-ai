@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>小天 · AI写作</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif; background: #f0f2f5; color: #333; height: 100vh; display: flex; flex-direction: column; }
+        
+        .header { background: linear-gradient(135deg, #1a1a2e, #16213e); color: white; padding: 16px 20px; text-align: center; }
+        .header h1 { font-size: 1.3em; }
+        .header p { font-size: 0.8em; opacity: 0.7; margin-top: 2px; }
+
+        .chat-area { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 12px; }
+        .msg { max-width: 85%; padding: 12px 16px; border-radius: 12px; line-height: 1.6; font-size: 0.92em; animation: fadeIn 0.3s; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .msg.bot { background: white; align-self: flex-start; border-bottom-left-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+        .msg.bot .name { font-size: 0.75em; color: #e94560; font-weight: 600; margin-bottom: 4px; }
+        .msg.user { background: #e94560; color: white; align-self: flex-end; border-bottom-right-radius: 4px; }
+        
+        .input-area { background: white; padding: 12px 16px; border-top: 1px solid #eee; display: flex; gap: 8px; align-items: center; }
+        .input-area textarea { flex: 1; border: 1px solid #ddd; border-radius: 20px; padding: 10px 16px; resize: none; font-size: 0.92em; outline: none; font-family: inherit; max-height: 100px; }
+        .input-area textarea:focus { border-color: #e94560; }
+        .input-area button { background: #e94560; color: white; border: none; border-radius: 50%; width: 40px; height: 40px; font-size: 1.1em; cursor: pointer; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+        .input-area button:disabled { opacity: 0.5; cursor: not-allowed; }
+        
+        .typing { color: #999; font-size: 0.85em; padding: 8px 16px; align-self: flex-start; }
+        
+        .welcome-card { background: white; border-radius: 12px; padding: 20px; margin-bottom: 8px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+        .welcome-card h2 { font-size: 1.05em; color: #1a1a2e; margin-bottom: 8px; }
+        .welcome-card p, .welcome-card li { color: #555; font-size: 0.88em; line-height: 1.7; }
+        .welcome-card ul { padding-left: 18px; }
+        .price-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
+        .price-item { background: #f8f9fa; border-radius: 8px; padding: 12px; text-align: center; }
+        .price-item .name { font-size: 0.8em; color: #888; }
+        .price-item .price { font-size: 1.2em; font-weight: 700; color: #e94560; margin: 2px 0; }
+        .price-item .desc { font-size: 0.75em; color: #999; }
+        
+        @media (max-width: 400px) { .price-grid { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>✍️ 小天 · AI写作</h1>
+        <p>24小时在线 · 无限修改 · 先写后付</p>
+    </div>
+    
+    <div class="chat-area" id="chatArea">
+        <div class="msg bot">
+            <div class="name">🤖 小天</div>
+            <p>嗨！我是小天，你的AI写作助手 ✨</p>
+            <p style="margin-top:4px;">告诉我你想写什么，我马上帮你搞定！</p>
+        </div>
+        <div class="welcome-card">
+            <h2>📝 我能帮你写：</h2>
+            <ul>
+                <li>小红书文案、公众号文章、推广文案</li>
+                <li>商业计划书、演讲稿、简历</li>
+                <li>工作总结、情感故事、品牌故事</li>
+                <li>任何文字需求，说说就行！</li>
+            </ul>
+            <div class="price-grid">
+                <div class="price-item"><div class="name">短文</div><div class="price">¥49</div><div class="desc">≤500字</div></div>
+                <div class="price-item"><div class="name">标准</div><div class="price">¥99</div><div class="desc">500-1500字</div></div>
+                <div class="price-item"><div class="name">长文</div><div class="price">¥199</div><div class="desc">1500-3000字</div></div>
+                <div class="price-item"><div class="name">深度</div><div class="price">¥299</div><div class="desc">3000-5000字</div></div>
+            </div>
+            <p style="text-align:center;margin-top:8px;color:#999;font-size:0.8em;">批量订单私聊报价更优惠</p>
+        </div>
+    </div>
+
+    <div class="input-area">
+        <textarea id="msgInput" rows="1" placeholder="输入你的写作需求..." onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMsg()}"></textarea>
+        <button id="sendBtn" onclick="sendMsg()">➤</button>
+    </div>
+
+    <script>
+        let visitorId = localStorage.getItem('visitor_id') || 'v_' + Date.now() + '_' + Math.random().toString(36).slice(2,8);
+        localStorage.setItem('visitor_id', visitorId);
+        
+        const chatArea = document.getElementById('chatArea');
+        const msgInput = document.getElementById('msgInput');
+        const sendBtn = document.getElementById('sendBtn');
+
+        function addMessage(role, text) {
+            const div = document.createElement('div');
+            div.className = 'msg ' + role;
+            if (role === 'bot') {
+                div.innerHTML = '<div class="name">🤖 小天</div><p>' + text.replace(/\n/g, '<br>') + '</p>';
+            } else {
+                div.innerHTML = '<p>' + text.replace(/\n/g, '<br>') + '</p>';
+            }
+            chatArea.appendChild(div);
+            chatArea.scrollTop = chatArea.scrollHeight;
+        }
+
+        function addTyping() {
+            const div = document.createElement('div');
+            div.className = 'typing';
+            div.id = 'typing';
+            div.textContent = '小天正在输入...';
+            chatArea.appendChild(div);
+            chatArea.scrollTop = chatArea.scrollHeight;
+        }
+
+        function removeTyping() {
+            const t = document.getElementById('typing');
+            if (t) t.remove();
+        }
+
+        async function sendMsg() {
+            const text = msgInput.value.trim();
+            if (!text) return;
+            msgInput.value = '';
+            sendBtn.disabled = true;
+
+            addMessage('user', text);
+            addTyping();
+
+            try {
+                const res = await fetch('/api/message', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'X-Visitor-Id': visitorId },
+                    body: JSON.stringify({ content: text })
+                });
+                const data = await res.json();
+                
+                removeTyping();
+                if (data.ok) {
+                    addMessage('bot', '收到你的消息啦！✍️ 我正在看你的需求，稍等片刻马上回复你～');
+                }
+            } catch(e) {
+                removeTyping();
+                addMessage('bot', '抱歉，消息发送失败，请重试 🙏');
+            }
+            sendBtn.disabled = false;
+            msgInput.focus();
+        }
+
+        // Load existing messages
+        async function loadMessages() {
+            try {
+                const res = await fetch('/api/messages/' + visitorId);
+                const msgs = await res.json();
+                if (msgs.length > 0) {
+                    // Remove welcome card if has history
+                    const cards = chatArea.querySelectorAll('.welcome-card');
+                    cards.forEach(c => c.remove());
+                    
+                    // Remove the initial bot greeting
+                    const bots = chatArea.querySelectorAll('.msg.bot');
+                    bots.forEach(b => b.remove());
+                    
+                    msgs.forEach(m => addMessage(m.role === 'user' ? 'user' : 'bot', m.content));
+                }
+            } catch(e) {}
+        }
+        loadMessages();
+    </script>
+</body>
+</html>
