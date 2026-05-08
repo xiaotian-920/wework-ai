@@ -8,340 +8,458 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         :root {
             --bg: #f2f2f7; --card: #ffffff; --text: #1c1c1e;
-            --text2: #8e8e93; --accent: #ff3b30; --border: #e5e5ea;
+            --text2: #8e8e93; --accent: #ff3b30; --accent-hover: #e33428;
+            --border: #e5e5ea; --green: #34c759; --blue: #007aff;
         }
         body {
-            font-family: -apple-system, "PingFang SC", "SF Pro Text", sans-serif;
+            font-family: -apple-system, "PingFang SC", "SF Pro Text", "Segoe UI", sans-serif;
             background: var(--bg); color: var(--text);
             height: 100vh; display: flex; flex-direction: column; overflow: hidden;
         }
 
+        /* === Header === */
         .header {
-            background: rgba(255,255,255,0.92);
-            backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
+            background: rgba(255,255,255,0.88);
+            backdrop-filter: blur(40px) saturate(1.2);
+            -webkit-backdrop-filter: blur(40px) saturate(1.2);
             border-bottom: 0.5px solid var(--border);
-            padding: 14px 16px 12px; text-align: center;
+            padding: 12px 16px 10px;
+            text-align: center;
             position: relative; flex-shrink: 0; z-index: 10;
         }
-        .header h1 { font-size: 17px; font-weight: 700; letter-spacing: -0.3px; }
-        .header p { font-size: 12px; color: var(--text2); margin-top: 1px; }
-        .lang-switch { position: absolute; top: 13px; right: 14px; display: flex; gap: 2px; }
+        .header h1 { font-size: 16px; font-weight: 700; letter-spacing: -0.3px; }
+        .header .status {
+            font-size: 11px; color: var(--green); font-weight: 500;
+            display: inline-flex; align-items: center; gap: 3px;
+            margin-top: 1px;
+        }
+        .header .status::before { content: ''; width: 6px; height: 6px; background: var(--green); border-radius: 50%; display: inline-block; }
+        .lang-switch { position: absolute; top: 11px; right: 12px; display: flex; gap: 1px; }
         .lang-btn {
             background: transparent; color: var(--text2); border: none;
-            border-radius: 20px; padding: 3px 10px; font-size: 12px; cursor: pointer; font-weight: 500;
+            border-radius: 18px; padding: 3px 9px; font-size: 11px; cursor: pointer; font-weight: 500;
+            transition: all 0.2s;
         }
         .lang-btn.active { background: var(--accent); color: white; }
 
+        /* === Chat === */
         .chat-area {
-            flex: 1; overflow-y: auto; padding: 8px 14px 100px;
-            display: flex; flex-direction: column; gap: 6px;
+            flex: 1; overflow-y: auto; padding: 8px 12px 90px;
+            display: flex; flex-direction: column; gap: 8px;
             -webkit-overflow-scrolling: touch;
         }
         .chat-area::-webkit-scrollbar { width: 3px; }
         .chat-area::-webkit-scrollbar-thumb { background: #c7c7cc; border-radius: 3px; }
 
         .msg {
-            max-width: 80%; padding: 10px 15px;
-            border-radius: 18px; line-height: 1.55; font-size: 15px;
-            animation: msgIn 0.25s ease; word-break: break-word;
+            max-width: 82%;
+            padding: 10px 14px;
+            border-radius: 20px;
+            line-height: 1.55;
+            font-size: 15px;
+            animation: msgIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            word-break: break-word;
+            position: relative;
         }
         @keyframes msgIn {
-            from { opacity: 0; transform: translateY(4px) scale(0.96); }
+            from { opacity: 0; transform: translateY(8px) scale(0.96); }
             to { opacity: 1; transform: translateY(0) scale(1); }
         }
         .msg.bot {
-            background: #e9e9eb; color: var(--text);
-            align-self: flex-start; border-bottom-left-radius: 4px;
+            background: #e9e9eb;
+            color: var(--text);
+            align-self: flex-start;
+            border-bottom-left-radius: 5px;
         }
-        .msg.bot .name { font-size: 12px; color: var(--accent); font-weight: 700; margin-bottom: 2px; }
+        .msg.bot .name {
+            font-size: 12px;
+            color: var(--accent);
+            font-weight: 700;
+            margin-bottom: 3px;
+        }
         .msg.user {
-            background: var(--accent); color: white;
-            align-self: flex-end; border-bottom-right-radius: 4px;
+            background: var(--accent);
+            color: white;
+            align-self: flex-end;
+            border-bottom-right-radius: 5px;
         }
-        .typing-indicator {
-            align-self: flex-start; background: #e9e9eb;
-            border-radius: 18px; border-bottom-left-radius: 4px;
-            padding: 12px 18px; display: flex; gap: 4px; align-items: center;
+
+        .typing {
+            align-self: flex-start;
+            background: #e9e9eb;
+            border-radius: 20px;
+            border-bottom-left-radius: 5px;
+            padding: 12px 18px;
+            display: flex; gap: 4px; align-items: center;
         }
-        .typing-indicator span {
-            width: 7px; height: 7px; border-radius: 50%; background: #b0b0b0;
+        .typing span {
+            width: 7px; height: 7px; border-radius: 50%;
+            background: #b0b0b0;
             animation: bounce 1.4s infinite ease-in-out both;
         }
-        .typing-indicator span:nth-child(1) { animation-delay: -0.32s; }
-        .typing-indicator span:nth-child(2) { animation-delay: -0.16s; }
-        .typing-indicator span:nth-child(3) { animation-delay: 0s; }
+        .typing span:nth-child(1) { animation-delay: -0.32s; }
+        .typing span:nth-child(2) { animation-delay: -0.16s; }
+        .typing span:nth-child(3) { animation-delay: 0s; }
         @keyframes bounce { 0%,80%,100% { transform: scale(0.6); } 40% { transform: scale(1); } }
 
-        /* Collapsible payment bar */
-        .pay-bar {
+        /* === Price card === */
+        .price-card {
+            background: var(--card);
+            border-radius: 16px;
+            padding: 16px;
+            box-shadow: 0 1px 6px rgba(0,0,0,0.04);
+            border: 0.5px solid var(--border);
+            margin-top: 4px;
+        }
+        .price-card h3 { font-size: 14px; font-weight: 700; margin-bottom: 10px; }
+        .price-card ul { list-style: none; padding: 0; font-size: 13px; color: #555; line-height: 1.8; margin-bottom: 10px; }
+        .price-card ul li::before { content: "✨ "; font-size: 11px; }
+        .p-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+        .p-item {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 10px 8px;
+            text-align: center;
+            transition: all 0.15s;
+        }
+        .p-item:active { transform: scale(0.97); }
+        .p-item .lbl { font-size: 11px; color: var(--text2); font-weight: 500; }
+        .p-item .num { font-size: 20px; font-weight: 800; color: var(--accent); letter-spacing: -0.5px; }
+        .p-item .dsc { font-size: 10px; color: #bbb; margin-top: 1px; }
+
+        /* === Payment bar === */
+        .pay-container {
             background: white;
             border-top: 0.5px solid var(--border);
             flex-shrink: 0;
-            transition: all 0.3s ease;
+            transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1);
             overflow: hidden;
             position: relative;
+            z-index: 5;
         }
-        .pay-bar.collapsed { max-height: 44px; }
-        .pay-bar.expanded { max-height: 400px; }
+        .pay-container.collapsed { max-height: 48px; }
+        .pay-container.expanded { max-height: 500px; }
 
         .pay-toggle {
             display: flex; align-items: center; justify-content: space-between;
-            padding: 10px 16px; cursor: pointer;
-            border: none; background: none; width: 100%; font-size: 15px;
+            padding: 12px 16px; cursor: pointer;
+            border: none; background: none; width: 100%;
         }
         .pay-toggle .left { display: flex; align-items: center; gap: 8px; }
-        .pay-toggle .left span { font-weight: 700; }
-        .pay-toggle .right { font-size: 12px; color: var(--accent); display: flex; align-items: center; gap: 4px; }
-
-        .pay-body { padding: 0 16px 14px; }
-
-        .qr-row { display: flex; gap: 10px; justify-content: center; margin-bottom: 6px; }
-        .qr-item { flex: 1; min-width: 80px; max-width: 130px; text-align: center; }
-        .qr-item img { width: 100%; border-radius: 10px; border: 1px solid #eee; }
-        .qr-item .lbl { font-size: 11px; color: var(--text2); margin-top: 2px; }
-
-        .paypal-box {
-            background: linear-gradient(135deg, #f0f7ff, #e8f4ff);
-            border-radius: 10px; padding: 10px; text-align: center; font-size: 13px;
-        }
-        .paypal-btn {
-            display: inline-block; background: #0070ba; color: white;
-            text-decoration: none; border-radius: 20px; padding: 7px 16px;
-            font-size: 13px; font-weight: 600; margin-top: 4px;
-        }
-        .confirm-btn {
-            display: block; width: 100%;
-            background: linear-gradient(135deg, #f5af19, #f12711);
-            color: white; border: none; border-radius: 22px;
-            padding: 12px; font-size: 15px; font-weight: 700; cursor: pointer; margin-top: 6px;
-        }
-        .paid-badge { color: #34c759; font-size: 14px; font-weight: 600; text-align: center; padding: 6px; }
-
-        /* Float pay button */
-        .float-pay {
-            position: fixed; bottom: 56px; right: 16px; z-index: 100;
-            background: linear-gradient(135deg, #f5af19, #f12711); color: white;
-            border: none; border-radius: 50%; width: 52px; height: 52px;
-            font-size: 22px; cursor: pointer;
-            box-shadow: 0 4px 16px rgba(241,39,17,0.35);
-            display: none; align-items: center; justify-content: center;
+        .pay-toggle .left .icon { font-size: 18px; }
+        .pay-toggle .left .label { font-size: 14px; font-weight: 700; }
+        .pay-toggle .right {
+            font-size: 12px; color: var(--accent);
+            background: #fff0ee; border-radius: 16px;
+            padding: 4px 12px; font-weight: 600;
             transition: all 0.2s;
         }
-        .float-pay:active { transform: scale(0.9); }
+        .pay-body { padding: 0 16px 16px; }
 
+        /* QR codes - premium */
+        .qr-section { display: flex; gap: 14px; justify-content: center; margin-bottom: 10px; }
+        .qr-card {
+            flex: 1; max-width: 145px;
+            background: #fafafa;
+            border-radius: 14px;
+            padding: 10px;
+            text-align: center;
+            border: 1px solid #f0f0f0;
+        }
+        .qr-card img {
+            width: 100%; aspect-ratio: 1;
+            border-radius: 10px;
+            display: block;
+        }
+        .qr-card .name {
+            font-size: 12px; font-weight: 600; margin-top: 6px;
+            display: flex; align-items: center; justify-content: center; gap: 4px;
+        }
+        .qr-card .name .dot { width: 6px; height: 6px; border-radius: 50%; display: inline-block; }
+        .dot.green { background: #34c759; }
+        .dot.blue { background: #007aff; }
+        .qr-card .hint {
+            font-size: 10px; color: #aaa; margin-top: 2px;
+        }
+
+        .paypal-card {
+            background: linear-gradient(135deg, #e8f4fd, #f5faff);
+            border: 1px solid #cce5ff;
+            border-radius: 14px; padding: 12px 14px;
+            display: flex; align-items: center; justify-content: space-between;
+            gap: 8px;
+        }
+        .paypal-card .info { flex: 1; }
+        .paypal-card .info p { font-size: 12px; color: #444; }
+        .paypal-card .info .email { font-size: 11px; color: #666; }
+        .paypal-card .btn {
+            background: #0070ba; color: white; text-decoration: none;
+            border-radius: 20px; padding: 8px 16px;
+            font-size: 13px; font-weight: 600;
+            white-space: nowrap;
+            transition: all 0.2s;
+        }
+        .paypal-card .btn:active { transform: scale(0.96); }
+
+        .pay-btn {
+            display: block; width: 100%;
+            background: linear-gradient(135deg, #ff6b35, #f12711);
+            border: none; border-radius: 24px;
+            padding: 14px; font-size: 16px; font-weight: 700;
+            color: white; cursor: pointer;
+            margin-top: 10px;
+            transition: all 0.2s;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 12px rgba(241,39,17,0.25);
+        }
+        .pay-btn:active { transform: scale(0.97); box-shadow: 0 2px 6px rgba(241,39,17,0.2); }
+        .paid-badge {
+            color: var(--green); font-size: 14px; font-weight: 600;
+            text-align: center; padding: 8px; display: none;
+        }
+
+        /* Float pay button */
+        .float-btn {
+            position: fixed; bottom: 58px; right: 16px; z-index: 100;
+            width: 50px; height: 50px; border-radius: 50%;
+            background: linear-gradient(135deg, #ff6b35, #f12711);
+            color: white; border: none; font-size: 22px;
+            cursor: pointer; display: none;
+            align-items: center; justify-content: center;
+            box-shadow: 0 4px 16px rgba(241,39,17,0.35);
+            transition: all 0.2s;
+        }
+        .float-btn:active { transform: scale(0.9); }
+
+        /* Input */
         .input-area {
             background: white; padding: 8px 12px 12px;
             border-top: 0.5px solid var(--border);
             display: flex; gap: 8px; align-items: flex-end; flex-shrink: 0;
         }
         .input-area textarea {
-            flex: 1; background: #f2f2f7; border: none; border-radius: 20px;
-            padding: 10px 16px; resize: none; font-size: 16px; outline: none;
+            flex: 1; background: #f2f2f7; border: none;
+            border-radius: 22px; padding: 10px 16px;
+            resize: none; font-size: 16px; outline: none;
             font-family: inherit; max-height: 80px; line-height: 1.4;
         }
+        .input-area textarea:focus { background: #e9e9eb; }
         .input-area button {
             background: var(--accent); color: white; border: none;
-            border-radius: 50%; width: 36px; height: 36px; font-size: 16px;
-            cursor: pointer; flex-shrink: 0;
+            border-radius: 50%; width: 36px; height: 36px;
+            font-size: 16px; cursor: pointer; flex-shrink: 0;
             display: flex; align-items: center; justify-content: center;
+            transition: transform 0.15s;
         }
-        .input-area button:disabled { opacity: 0.4; cursor: not-allowed; }
+        .input-area button:disabled { opacity: 0.4; cursor: default; }
+        .input-area button:active:not(:disabled) { transform: scale(0.88); }
+
+        @media (max-width: 400px) {
+            .qr-card { max-width: 120px; }
+            .msg { font-size: 14px; }
+        }
     </style>
 </head>
 <body>
     <div class="header">
-        <h1 id="siteTitle">🗨️ 小天 · AI写作</h1>
-        <p id="siteSub">在线 · 无限修改 · 先写后付</p>
+        <h1 id="st">🗨️ 小天 · AI写作</h1>
+        <div class="status" id="status">在线 · <span id="ss">无限修改 · 先写后付</span></div>
         <div class="lang-switch">
-            <button class="lang-btn active" data-lang="zh" onclick="switchLang('zh')">中文</button>
-            <button class="lang-btn" data-lang="en" onclick="switchLang('en')">EN</button>
+            <button class="lang-btn active" data-lang="zh" onclick="sw('zh')">中文</button>
+            <button class="lang-btn" data-lang="en" onclick="sw('en')">EN</button>
         </div>
     </div>
 
-    <div class="chat-area" id="chatArea">
-        <div class="msg bot" id="welcomeMsg">
+    <div class="chat-area" id="chat">
+        <div class="msg bot" id="welcome">
             <div class="name">🤖 小天</div>
-            <p id="welcomeText">嗨！我是小天，你的AI写作助手 ✨<br><br>告诉我你想写什么，我马上帮你搞定！</p>
+            <p id="wt">嗨！我是小天，你的AI写作助手 ✨<br><br>告诉我你想写什么，我马上帮你搞定！</p>
         </div>
-        <div id="priceCards" style="margin-top:4px;">
-        <div class="card" style="background:var(--card);border-radius:14px;padding:14px 16px;border:0.5px solid var(--border);">
-            <h3 style="font-size:14px;font-weight:700;margin-bottom:8px;" id="svcTitle">📝 我能帮你写</h3>
-            <ul id="svcList" style="list-style:none;padding:0;font-size:13px;color:#555;line-height:1.7;">
-                <li>⭐ 小红书文案、公众号文章、推广文案</li>
-                <li>⭐ 商业计划书、演讲稿、简历</li>
-                <li>⭐ 工作总结、情感故事、品牌故事</li>
-                <li>⭐ 任何文字需求，说说就行！</li>
+        <div id="pcards">
+        <div class="price-card">
+            <h3 id="svc">📝 我能帮你写</h3>
+            <ul id="svcList">
+                <li>小红书文案、公众号文章、推广文案</li>
+                <li>商业计划书、演讲稿、简历</li>
+                <li>工作总结、情感故事、品牌故事</li>
+                <li>任何文字需求，说说就行！</li>
             </ul>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-top:8px;">
-                <div style="background:#f8f9fa;border-radius:10px;padding:8px;text-align:center;"><div style="font-size:11px;color:var(--text2)" id="pn1">短文</div><div style="font-size:18px;font-weight:800;color:var(--accent);letter-spacing:-0.5px;" id="pp1">¥49</div><div style="font-size:10px;color:#aaa;" id="pd1">≤500字</div></div>
-                <div style="background:#f8f9fa;border-radius:10px;padding:8px;text-align:center;"><div style="font-size:11px;color:var(--text2)" id="pn2">标准</div><div style="font-size:18px;font-weight:800;color:var(--accent);letter-spacing:-0.5px;" id="pp2">¥99</div><div style="font-size:10px;color:#aaa;" id="pd2">500-1500字</div></div>
-                <div style="background:#f8f9fa;border-radius:10px;padding:8px;text-align:center;"><div style="font-size:11px;color:var(--text2)" id="pn3">长文</div><div style="font-size:18px;font-weight:800;color:var(--accent);letter-spacing:-0.5px;" id="pp3">¥199</div><div style="font-size:10px;color:#aaa;" id="pd3">1500-3000字</div></div>
-                <div style="background:#f8f9fa;border-radius:10px;padding:8px;text-align:center;"><div style="font-size:11px;color:var(--text2)" id="pn4">深度</div><div style="font-size:18px;font-weight:800;color:var(--accent);letter-spacing:-0.5px;" id="pp4">¥299</div><div style="font-size:10px;color:#aaa;" id="pd4">3000-5000字</div></div>
+            <div class="p-grid">
+                <div class="p-item"><div class="lbl" id="n1">短文</div><div class="num" id="p1">¥49</div><div class="dsc" id="d1">≤500字</div></div>
+                <div class="p-item"><div class="lbl" id="n2">标准</div><div class="num" id="p2">¥99</div><div class="dsc" id="d2">500-1500字</div></div>
+                <div class="p-item"><div class="lbl" id="n3">长文</div><div class="num" id="p3">¥199</div><div class="dsc" id="d3">1500-3000字</div></div>
+                <div class="p-item"><div class="lbl" id="n4">深度</div><div class="num" id="p4">¥299</div><div class="dsc" id="d4">3000-5000字</div></div>
             </div>
-            <p style="text-align:center;margin-top:6px;font-size:11px;color:#aaa;" id="bulkTip">批量订单私聊报价更优惠</p>
+            <p style="text-align:center;margin-top:8px;font-size:11px;color:#aaa;" id="bulk">批量订单私聊报价更优惠</p>
         </div>
         </div>
     </div>
 
-    <!-- Collapsible payment bar -->
-    <div class="pay-bar collapsed" id="payBar">
-        <button class="pay-toggle" onclick="togglePay()">
-            <span class="left">💰 <span id="payTitle">满意后再付款</span></span>
+    <!-- Payment -->
+    <div class="pay-container collapsed" id="payC">
+        <button class="pay-toggle" onclick="tp()">
+            <span class="left"><span class="icon">💰</span><span class="label" id="payLbl">满意后再付款</span></span>
             <span class="right" id="toggleLabel">展开 ↑</span>
         </button>
         <div class="pay-body">
-            <div class="qr-row">
-                <div class="qr-item">
-                    <img src="/wechat_qr.jpg" alt="">
-                    <p class="lbl">💚 <span id="wxLabel">微信支付</span></p>
+            <div class="qr-section">
+                <div class="qr-card">
+                    <img src="/wechat_qr.jpg" alt="微信支付">
+                    <div class="name"><span class="dot green"></span><span id="wx">微信支付</span></div>
+                    <div class="hint" id="wxHint">扫码即可付款</div>
                 </div>
-                <div class="qr-item">
-                    <img src="/alipay_qr.jpg" alt="">
-                    <p class="lbl">💙 <span id="aliLabel">支付宝</span></p>
+                <div class="qr-card">
+                    <img src="/alipay_qr.jpg" alt="支付宝">
+                    <div class="name"><span class="dot blue"></span><span id="ali">支付宝</span></div>
+                    <div class="hint" id="aliHint">扫码即可付款</div>
                 </div>
             </div>
-            <div class="paypal-box">
-                <p id="ppDesc">🌍 <strong>海外：PayPal</strong></p>
-                <p style="font-size:12px;color:#666;">260083314@163.com</p>
-                <a href="https://paypal.me/mingming37" target="_blank" class="paypal-btn" id="ppBtn">💳 Pay with PayPal</a>
+            <div class="paypal-card">
+                <div class="info">
+                    <p id="ppTxt">🌍 <strong>PayPal</strong></p>
+                    <div class="email">260083314@163.com</div>
+                </div>
+                <a href="https://paypal.me/mingming37" target="_blank" class="btn" id="ppBtn">💳 Pay</a>
             </div>
-            <button class="confirm-btn" id="confirmBtn" onclick="confirmPaid()"><span id="confirmText">💳 我已付款</span></button>
-            <p class="paid-badge" id="paidNotice" style="display:none;">✅ 收款确认中！</p>
+            <button class="pay-btn" id="confirmBtn" onclick="cp()"><span id="cText">💳 我已付款，解锁完整版</span></button>
+            <div class="paid-badge" id="paidNotice">✅ 收款确认成功！完整版马上送达</div>
         </div>
     </div>
 
-    <!-- Float pay button -->
-    <button class="float-pay" id="floatPay" onclick="togglePay(true)">💰</button>
+    <button class="float-btn" id="floatBtn" onclick="tp(true)">💰</button>
 
     <div class="input-area">
-        <textarea id="msgInput" rows="1" placeholder="输入你的写作需求..." onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMsg();}" onfocus="closePay()"></textarea>
-        <button id="sendBtn" onclick="sendMsg()">↑</button>
+        <textarea id="input" rows="1" placeholder="输入你的写作需求..." onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sm();}" onfocus="closePay()"></textarea>
+        <button id="sendBtn" onclick="sm()">↑</button>
     </div>
 
     <script>
-        var lang = localStorage.getItem('lang') || 'zh';
-        var visitorId = localStorage.getItem('visitor_id') || 'v_' + Date.now() + '_' + Math.random().toString(36).slice(2,8);
-        localStorage.setItem('visitor_id', visitorId);
+        var L = localStorage.getItem('lang') || 'zh';
+        var VID = localStorage.getItem('vid') || 'v_' + Date.now() + '_' + Math.random().toString(36).slice(2,8);
+        localStorage.setItem('vid', VID);
 
-        var t = {
-            zh: { title:'🗨️ 小天 · AI写作', sub:'在线 · 无限修改 · 先写后付', welcome:'嗨！我是小天，你的AI写作助手 ✨<br><br>告诉我你想写什么，我马上帮你搞定！',
-                s1:'小红书文案、公众号文章、推广文案', s2:'商业计划书、演讲稿、简历', s3:'工作总结、情感故事、品牌故事', s4:'任何文字需求，说说就行！',
-                p1:'短文',p2:'标准',p3:'长文',p4:'深度', pp1:'¥49',pp2:'¥99',pp3:'¥199',pp4:'¥299', pd1:'≤500字',pd2:'500-1500字',pd3:'1500-3000字',pd4:'3000-5000字',
-                bulk:'批量订单私聊报价更优惠', wx:'微信支付', ali:'支付宝', pay:'满意后再付款', pp:'🌍 海外：PayPal',
-                confirm:'💳 我已付款', paid:'✅ 收款确认中！', input:'输入你的写作需求...', expand:'展开 ↑', collapse:'收起 ↓' },
-            en: { title:'🗨️ XiaoTian · AI Writing', sub:'Online · Unlimited Revisions · Pay After Satisfaction', welcome:'Hi! I\'m XiaoTian, your AI writing assistant ✨<br><br>Tell me what you need written, and I\'ll get it done!',
-                s1:'Social media posts, blog articles, marketing copy', s2:'Business plans, speeches, resumes', s3:'Work summaries, stories, brand stories', s4:'Anything text-related - just tell me!',
-                p1:'Short',p2:'Standard',p3:'Long',p4:'In-Depth', pp1:'$7',pp2:'$14',pp3:'$28',pp4:'$42', pd1:'≤500 words',pd2:'500-1500 words',pd3:'1500-3000 words',pd4:'3000-5000 words',
-                bulk:'Bulk orders: DM for special pricing', wx:'WeChat Pay', ali:'Alipay', pay:'Pay After Satisfaction', pp:'🌍 PayPal',
-                confirm:'💳 I\'ve Paid', paid:'✅ Payment confirmed!', input:'Describe what you need written...', expand:'Expand ↑', collapse:'Collapse ↓' }
+        var TX = {
+            zh: {st:'🗨️ 小天 · AI写作', ss:'无限修改 · 先写后付', wt:'嗨！我是小天，你的AI写作助手 ✨<br><br>告诉我你想写什么，我马上帮你搞定！',
+                sv:'📝 我能帮你写', l1:'✨ 小红书文案、公众号文章、推广文案', l2:'✨ 商业计划书、演讲稿、简历', l3:'✨ 工作总结、情感故事、品牌故事', l4:'✨ 任何文字需求，说说就行！',
+                n1:'短文',n2:'标准',n3:'长文',n4:'深度', p1:'¥49',p2:'¥99',p3:'¥199',p4:'¥299', d1:'≤500字',d2:'500-1500字',d3:'1500-3000字',d4:'3000-5000字',
+                bk:'批量订单私聊报价更优惠', wx:'微信支付', wxH:'扫码即可付款', ali:'支付宝', aliH:'扫码即可付款',
+                pl:'满意后再付款', ppT:'🌍 PayPal', ppB:'💳 Pay', cT:'💳 我已付款，解锁完整版',
+                paid:'✅ 收款确认成功！完整版马上送达', ph:'输入你的写作需求...', exp:'展开 ↑', col:'收起 ↓'},
+            en: {st:'🗨️ XiaoTian · AI Writing', ss:'Unlimited Revisions · Pay After', wt:'Hi! I\'m XiaoTian, your AI writing assistant ✨<br><br>Tell me what you need, and I\'ll write it for you!',
+                sv:'📝 I can write', l1:'✨ Social media posts, blog articles', l2:'✨ Business plans, speeches, resumes', l3:'✨ Work summaries, stories, brand stories', l4:'✨ Anything text-related - just tell me!',
+                n1:'Short',n2:'Standard',n3:'Long',n4:'In-Depth', p1:'$7',p2:'$14',p3:'$28',p4:'$42', d1:'≤500 words',d2:'500-1500 words',d3:'1500-3000 words',d4:'3000-5000 words',
+                bk:'Bulk orders: DM for pricing', wx:'WeChat Pay', wxH:'Scan to pay', ali:'Alipay', aliH:'Scan to pay',
+                pl:'Pay After Satisfaction', ppT:'🌍 PayPal', ppB:'💳 Pay', cT:'💳 I\'ve Paid - Unlock Full Version',
+                paid:'✅ Payment confirmed! Full version coming!', ph:'What do you need written?', exp:'Expand ↑', col:'Collapse ↓'}
         };
 
-        function apply(l) {
-            var i = t[l];
-            document.getElementById('siteTitle').textContent = i.title;
-            document.getElementById('siteSub').textContent = i.sub;
-            document.getElementById('welcomeText').innerHTML = i.welcome;
-            document.querySelectorAll('#svcList li').forEach((li,idx) => li.textContent = '⭐ ' + i['s'+(idx+1)]);
-            ['pn','pp','pd'].forEach(p => { for(var x=1;x<=4;x++) document.getElementById(p+x).textContent = i[p+x]; });
-            document.getElementById('bulkTip').textContent = i.bulk;
-            document.getElementById('wxLabel').textContent = i.wx;
-            document.getElementById('aliLabel').textContent = i.ali;
-            document.getElementById('payTitle').textContent = i.pay;
-            document.getElementById('ppDesc').textContent = i.pp;
-            document.getElementById('confirmText').textContent = i.confirm;
-            document.getElementById('paidNotice').textContent = i.paid;
-            document.getElementById('msgInput').placeholder = i.input;
+        function sw(l) { L=l; localStorage.setItem('lang',l); document.querySelectorAll('.lang-btn').forEach(b=>b.classList.toggle('active',b.dataset.lang===l)); ap(); }
+        function ap() {
+            var x = TX[L];
+            document.getElementById('st').textContent = x.st;
+            document.getElementById('ss').textContent = x.ss;
+            document.getElementById('wt').innerHTML = x.wt;
+            document.getElementById('svc').textContent = x.sv;
+            document.querySelectorAll('#svcList li').forEach((li,i) => li.textContent = x['l'+(i+1)]);
+            ['n','p','d'].forEach(p => { for(var i=1;i<=4;i++) document.getElementById(p+i).textContent = x[p+i]; });
+            document.getElementById('bulk').textContent = x.bk;
+            ['wx','ali'].forEach(id => document.getElementById(id).textContent = x[id]);
+            document.getElementById('wxHint').textContent = x.wxH;
+            document.getElementById('aliHint').textContent = x.aliH;
+            document.getElementById('payLbl').textContent = x.pl;
+            document.getElementById('ppTxt').innerHTML = x.ppT;
+            document.getElementById('ppBtn').textContent = x.ppB;
+            document.getElementById('cText').textContent = x.cT;
+            document.getElementById('paidNotice').textContent = x.paid;
+            document.getElementById('input').placeholder = x.ph;
         }
+        sw(L);
 
-        function switchLang(l) { lang=l; localStorage.setItem('lang',l); document.querySelectorAll('.lang-btn').forEach(b=>b.classList.toggle('active',b.dataset.lang===l)); apply(l); }
-        switchLang(localStorage.getItem('lang') || 'zh');
+        var chat = document.getElementById('chat');
+        var inp = document.getElementById('input');
 
-        var chatArea = document.getElementById('chatArea');
-        var msgInput = document.getElementById('msgInput');
-
-        // Payment bar toggle
-        function togglePay(forceOpen) {
-            var bar = document.getElementById('payBar');
-            var label = document.getElementById('toggleLabel');
-            if(forceOpen || bar.classList.contains('collapsed')) {
-                bar.classList.remove('collapsed'); bar.classList.add('expanded');
-                label.textContent = t[lang].collapse;
-                setTimeout(() => bar.scrollIntoView({behavior:'smooth', block:'nearest'}), 100);
+        function tp(open) {
+            var c = document.getElementById('payC');
+            var l = document.getElementById('toggleLabel');
+            var x = TX[L];
+            if (open || c.classList.contains('collapsed')) {
+                c.classList.remove('collapsed'); c.classList.add('expanded');
+                l.textContent = x.col;
+                setTimeout(() => c.scrollIntoView({behavior:'smooth', block:'nearest'}), 100);
             } else {
-                bar.classList.remove('expanded'); bar.classList.add('collapsed');
-                label.textContent = t[lang].expand;
+                c.classList.remove('expanded'); c.classList.add('collapsed');
+                l.textContent = x.exp;
             }
         }
         function closePay() {
-            var bar = document.getElementById('payBar');
-            bar.classList.remove('expanded'); bar.classList.add('collapsed');
-            document.getElementById('toggleLabel').textContent = t[lang].expand;
+            document.getElementById('payC').classList.remove('expanded');
+            document.getElementById('payC').classList.add('collapsed');
+            document.getElementById('toggleLabel').textContent = TX[L].exp;
         }
 
-        function addMsg(role, text) {
+        function am(role, text) {
             var d = document.createElement('div');
             d.className = 'msg ' + role;
             if(role === 'bot') d.innerHTML = '<div class="name">🤖 小天</div><p>' + text.replace(/\n/g,'<br>') + '</p>';
             else d.innerHTML = '<p>' + text.replace(/\n/g,'<br>') + '</p>';
-            chatArea.appendChild(d);
-            chatArea.scrollTop = chatArea.scrollHeight;
+            chat.appendChild(d);
+            d.scrollIntoView({behavior:'smooth', block:'end'});
         }
-        function typing() { var d=document.createElement('div'); d.className='typing-indicator'; d.id='typing'; d.innerHTML='<span></span><span></span><span></span>'; chatArea.appendChild(d); chatArea.scrollTop=chatArea.scrollHeight; }
-        function untyping() { var t=document.getElementById('typing'); if(t) t.remove(); }
 
-        async function sendMsg() {
-            var text = msgInput.value.trim();
+        function ty(on) {
+            var e = document.getElementById('ty');
+            if(on && !e) { var d=document.createElement('div'); d.className='typing'; d.id='ty'; d.innerHTML='<span></span><span></span><span></span>'; chat.appendChild(d); d.scrollIntoView({behavior:'smooth',block:'end'}); }
+            if(!on && e) e.remove();
+        }
+
+        async function sm() {
+            var text = inp.value.trim();
             if(!text) return;
-            msgInput.value = ''; document.getElementById('sendBtn').disabled = true;
-            addMsg('user', text); typing();
-
+            inp.value = '';
+            document.getElementById('sendBtn').disabled = true;
+            am('user', text);
+            ty(true);
             try {
-                var res = await fetch('/api/message', {
-                    method:'POST', headers:{'Content-Type':'application/json','X-Visitor-Id':visitorId},
-                    body: JSON.stringify({content: text})
-                });
-                var data = await res.json();
-                if(data.ok) {
-                    // Poll for AI reply (wait up to 15s)
-                    var waited = 0;
-                    var check = setInterval(async () => {
-                        var m = await (await fetch('/api/messages/' + visitorId)).json();
-                        if(m.length > 0) {
-                            var last = m[m.length-1];
-                            if(last.role === 'assistant' && m.length >= 2 && m[m.length-2].content === text) {
-                                untyping(); addMsg('bot', last.content);
-                                document.getElementById('floatPay').style.display = 'flex';
-                                clearInterval(check);
-                            }
+                await fetch('/api/message', { method:'POST', headers:{'Content-Type':'application/json','X-Visitor-Id':VID}, body:JSON.stringify({content:text}) });
+                var waited = 0;
+                var iv = setInterval(async () => {
+                    var m = await (await fetch('/api/messages/' + VID)).json();
+                    if (m.length > 0) {
+                        var last = m[m.length-1];
+                        var prev = m.length > 1 ? m[m.length-2] : null;
+                        var isNew = prev && prev.content === text && last.role === 'assistant' && last.content.length > 10;
+                        if (isNew) {
+                            ty(false); am('bot', last.content);
+                            document.getElementById('floatBtn').style.display = 'flex';
+                            clearInterval(iv);
                         }
-                        waited += 1500;
-                        if(waited > 15000) { untyping(); addMsg('bot', '正在写稿中，请稍等～'); clearInterval(check); }
-                    }, 1500);
-                }
-            } catch(e) { untyping(); addMsg('bot', '抱歉出错了 🙏'); }
+                    }
+                    waited += 1500;
+                    if (waited > 18000) { ty(false); am('bot', '✍️ 正在写稿中，请稍等……'); clearInterval(iv); }
+                }, 1500);
+            } catch(e) { ty(false); am('bot', '😅 出错了，请重试'); }
             document.getElementById('sendBtn').disabled = false;
         }
 
-        async function confirmPaid() {
-            if(!confirm(lang==='zh'?'确认已付款？':'Confirm payment?')) return;
+        async function cp() {
+            if(!confirm(L==='zh'?'确认已付款？':'Confirm payment?')) return;
             try {
-                await fetch('/api/paid', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({visitorId}) });
+                await fetch('/api/paid', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({visitorId:VID}) });
                 document.getElementById('confirmBtn').style.display = 'none';
                 document.getElementById('paidNotice').style.display = 'block';
-                document.getElementById('floatPay').style.display = 'none';
-                addMsg('bot', lang==='zh'?'✅ 收款确认成功！🎉 完整版文稿已交付，有任何修改需求随时告诉我，无限修改！🙏':'✅ Payment confirmed! 🎉 Full version delivered! Free revisions anytime! 🙏');
+                document.getElementById('floatBtn').style.display = 'none';
+                am('bot', L==='zh'?'✅ 收款确认成功！🎉 感谢信任！完整版文稿已交付，有任何修改随时告诉我，无限修改！🙏':'✅ Payment confirmed! 🎉 Full version delivered! Free revisions anytime! 🙏');
             } catch(e) { alert('Failed'); }
         }
 
-        // Load saved messages
         async function loadMsgs() {
             try {
-                var m = await (await fetch('/api/messages/' + visitorId)).json();
-                if(m.length > 2) {
-                    document.querySelectorAll('#welcomeMsg, #priceCards').forEach(e => e.remove());
+                var m = await (await fetch('/api/messages/' + VID)).json();
+                if (m.length > 2) {
+                    document.querySelectorAll('#welcome, #pcards').forEach(e => e.remove());
                     var hasAI = false;
-                    m.forEach(msg => { addMsg(msg.role==='user'?'user':'bot', msg.content); if(msg.role==='assistant' && msg.content.length>30) hasAI=true; });
-                    if(hasAI) document.getElementById('floatPay').style.display = 'flex';
+                    m.forEach(msg => { am(msg.role==='user'?'user':'bot', msg.content); if(msg.role==='assistant' && msg.content.length>30) hasAI=true; });
+                    if(hasAI) document.getElementById('floatBtn').style.display = 'flex';
                 }
             } catch(e) {}
         }
