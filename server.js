@@ -100,19 +100,46 @@ app.post('/api/reply', (req, res) => {
   res.json({ ok: true });
 });
 
-app.post('/api/paid', (req, res) => {
+app.post('/api/paid', async (req, res) => {
   const { visitorId } = req.body;
   if (!visitorId) return res.status(400).json({ error: 'visitorId required' });
   const data = loadData();
   if (!data.conversations[visitorId]) return res.status(404).json({ error: 'not found' });
+  
+  // Mark as paid
   data.paidOrders.push({ visitorId, plan: 'standard', paidAt: Date.now() });
-  data.conversations[visitorId].messages.push({
-    role: 'assistant',
-    content: '✅ 收款确认成功！🎉 感谢信任！完整版文稿已交付，有任何修改需求随时告诉我，无限修改！🙏',
-    ts: Date.now()
-  });
+  
+  // Get original user request
+  const msgs = data.conversations[visitorId].messages;
+  const firstUserMsg = msgs.find(m => m.role === 'user');
+  const userRequest = firstUserMsg ? firstUserMsg.content : '';
+  
+  // Generate full version via DeepSeek
+  const fullVersionPrompt = '根据用户的需求，写一份完整、专业、详细的文稿（800-1500字）。这是客户付款后的完整版交付，结构要完整、内容要充实。\n\n用户需求：' + userRequest;
+  
+  // Send confirmation immediately
+  const confirmation = '✅ 收款成功！🎉 感谢信任！正在为您生成完整版文稿……请稍等片刻✍️';
+  msgs.push({ role: 'assistant', content: confirmation, ts: Date.now() });
   saveData(data);
   res.json({ ok: true });
+  
+  // Generate full version (async, non-blocking)
+  try {
+    const fullContent = await askDeepSeek([
+      { role: 'system', content: '你是小天，专业AI写作助手。客户已付款，现在需要交付完整版文稿。写得越详细越好、越专业越好，800-1500字。结构完整，直接给出成品。' },
+      { role: 'user', content: userRequest }
+    ]);
+    const d = loadData();
+    d.conversations[visitorId].messages.push({
+      role: 'assistant',
+      content: '📄 **完整版文稿**（已交付）\n\n' + fullContent + '\n\n---\n有任何修改需求随时告诉我，无限修改！🙏',
+      ts: Date.now()
+    });
+    saveData(d);
+    console.log('Full version delivered to', visitorId);
+  } catch(e) {
+    console.error('Failed to generate full version:', e.message);
+  }
 });
 
 app.get('/api/unpaid', (req, res) => {
