@@ -3,14 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>小天 · AI写作</title>
+    <title>小天 · AI Writing</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif; background: #f0f2f5; color: #333; height: 100vh; display: flex; flex-direction: column; }
+        body { font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', 'Segoe UI', sans-serif; background: #f0f2f5; color: #333; height: 100vh; display: flex; flex-direction: column; }
         
-        .header { background: linear-gradient(135deg, #1a1a2e, #16213e); color: white; padding: 16px 20px; text-align: center; }
-        .header h1 { font-size: 1.3em; }
-        .header p { font-size: 0.8em; opacity: 0.7; margin-top: 2px; }
+        .header { background: linear-gradient(135deg, #1a1a2e, #16213e); color: white; padding: 12px 20px; text-align: center; position: relative; }
+        .header h1 { font-size: 1.2em; }
+        .header p { font-size: 0.78em; opacity: 0.7; margin-top: 2px; }
+        .lang-switch { position: absolute; top: 12px; right: 16px; display: flex; gap: 4px; }
+        .lang-btn { background: rgba(255,255,255,0.15); color: rgba(255,255,255,0.8); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; padding: 4px 10px; font-size: 0.72em; cursor: pointer; transition: all 0.2s; }
+        .lang-btn.active { background: rgba(255,255,255,0.3); color: white; border-color: white; }
+        .lang-btn:hover { background: rgba(255,255,255,0.25); }
 
         .chat-area { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 12px; }
         .msg { max-width: 85%; padding: 12px 16px; border-radius: 12px; line-height: 1.6; font-size: 0.92em; animation: fadeIn 0.3s; }
@@ -54,78 +58,212 @@
         .reminder-bar { background: #fff3cd; color: #856404; padding: 10px 16px; font-size: 0.82em; display: none; align-items: center; gap: 8px; border-bottom: 1px solid #ffeeba; }
         .reminder-bar.show { display: flex; }
         .reminder-bar button { background: #e94560; color: white; border: none; border-radius: 6px; padding: 6px 14px; font-size: 0.82em; cursor: pointer; margin-left: auto; flex-shrink: 0; }
-        @media (max-width: 400px) { .price-grid { grid-template-columns: 1fr; } }
+        .paypal-section { background: #f0f8ff; border: 1px solid #b0d4f1; border-radius: 8px; padding: 12px; margin-top: 12px; }
+        .paypal-btn { background: #0070ba; color: white; border: none; border-radius: 6px; padding: 8px 16px; font-size: 0.85em; cursor: pointer; margin-top: 8px; display: inline-block; text-decoration: none; }
+        .paypal-btn:hover { background: #003087; }
+        @media (max-width: 400px) { .price-grid { grid-template-columns: 1fr; } .lang-switch { top: 8px; right: 10px; } .lang-btn { font-size: 0.65em; padding: 2px 7px; } }
     </style>
 </head>
 <body>
     <div class="header">
-        <h1>✍️ 小天 · AI写作</h1>
-        <p>24小时在线 · 无限修改 · 先写后付</p>
+        <h1 id="siteTitle">✍️ 小天 · AI写作</h1>
+        <p id="siteSub">24小时在线 · 无限修改 · 先写后付</p>
+        <div class="lang-switch">
+            <button class="lang-btn active" data-lang="zh" onclick="switchLang('zh')">中文</button>
+            <button class="lang-btn" data-lang="en" onclick="switchLang('en')">EN</button>
+        </div>
     </div>
     
+    <div class="reminder-bar" id="reminderBar">
+        <span id="reminderText">⏳ 小天已经为你写好了初稿，查看后满意的话请付款解锁完整版</span>
+        <button id="reminderBtn" onclick="goPay()">去付款</button>
+    </div>
+
     <div class="chat-area" id="chatArea">
         <div class="msg bot">
             <div class="name">🤖 小天</div>
-            <p>嗨！我是小天，你的AI写作助手 ✨</p>
-            <p style="margin-top:4px;">告诉我你想写什么，我马上帮你搞定！</p>
+            <p id="welcomeMsg">嗨！我是小天，你的AI写作助手 ✨<br><br>告诉我你想写什么，我马上帮你搞定！</p>
         </div>
-        <div class="welcome-card">
-            <h2>📝 我能帮你写：</h2>
-            <ul>
-                <li>小红书文案、公众号文章、推广文案</li>
-                <li>商业计划书、演讲稿、简历</li>
-                <li>工作总结、情感故事、品牌故事</li>
-                <li>任何文字需求，说说就行！</li>
+        <div class="welcome-card" id="welcomeCard">
+            <h2 id="serviceTitle">📝 我能帮你写：</h2>
+            <ul id="serviceList">
+                <li data-i18n="svc1">小红书文案、公众号文章、推广文案</li>
+                <li data-i18n="svc2">商业计划书、演讲稿、简历</li>
+                <li data-i18n="svc3">工作总结、情感故事、品牌故事</li>
+                <li data-i18n="svc4">任何文字需求，说说就行！</li>
             </ul>
             <div class="price-grid">
-                <div class="price-item"><div class="name">短文</div><div class="price">¥49</div><div class="desc">≤500字</div></div>
-                <div class="price-item"><div class="name">标准</div><div class="price">¥99</div><div class="desc">500-1500字</div></div>
-                <div class="price-item"><div class="name">长文</div><div class="price">¥199</div><div class="desc">1500-3000字</div></div>
-                <div class="price-item"><div class="name">深度</div><div class="price">¥299</div><div class="desc">3000-5000字</div></div>
+                <div class="price-item"><div class="name" id="p1n">短文</div><div class="price" id="p1p">¥49</div><div class="desc" id="p1d">≤500字</div></div>
+                <div class="price-item"><div class="name" id="p2n">标准</div><div class="price" id="p2p">¥99</div><div class="desc" id="p2d">500-1500字</div></div>
+                <div class="price-item"><div class="name" id="p3n">长文</div><div class="price" id="p3p">¥199</div><div class="desc" id="p3d">1500-3000字</div></div>
+                <div class="price-item"><div class="name" id="p4n">深度</div><div class="price" id="p4p">¥299</div><div class="desc" id="p4d">3000-5000字</div></div>
             </div>
-            <p style="text-align:center;margin-top:8px;color:#999;font-size:0.8em;">批量订单私聊报价更优惠</p>
+            <p style="text-align:center;margin-top:8px;color:#999;font-size:0.8em;" id="bulkTip">批量订单私聊报价更优惠</p>
         </div>
         <div class="payment-card" id="paymentCard">
             <div class="payment-header" onclick="togglePayment()">
-                💰 满意后再付款 &nbsp;<span class="toggle-icon">▼</span>
+                <span id="payHeader">💰 满意后再付款</span>
+                <span class="toggle-icon">▼</span>
             </div>
             <div class="payment-body" id="paymentBody">
-                <p style="text-align:left; color:#555; font-size:0.88em; margin-bottom:10px;">先写稿，满意后扫码付款👇</p>
-                <div class="qr-row">
+                <p style="text-align:left; color:#555; font-size:0.88em; margin-bottom:10px;" id="payDesc">先写稿，满意后扫码付款👇</p>
+                <div class="qr-row" id="zhQrRow">
                     <div class="qr-item">
                         <img src="/wechat_qr.jpg" alt="微信收款码" class="payment-qr">
-                        <p style="text-align:center; color:#888; font-size:0.75em; margin-top:4px;">💚 微信支付</p>
+                        <p style="text-align:center; color:#888; font-size:0.75em; margin-top:4px;">💚 <span id="wxLabel">微信支付</span></p>
                     </div>
                     <div class="qr-item">
                         <img src="/alipay_qr.jpg" alt="支付宝收款码" class="payment-qr">
-                        <p style="text-align:center; color:#888; font-size:0.75em; margin-top:4px;">💙 支付宝</p>
+                        <p style="text-align:center; color:#888; font-size:0.75em; margin-top:4px;">💙 <span id="aliLabel">支付宝</span></p>
                     </div>
                 </div>
-                <p style="text-align:center; color:#888; font-size:0.78em; margin-top:6px;">扫码付款 · 备注订单号</p>
-                <div class="payment-tip">
-                    <p>📌 交付流程：</p>
-                    <p>① 告诉我你的需求 → ② 我出稿 → ③ 满意后付款 → ④ 无限修改</p>
+                <p style="text-align:center; color:#888; font-size:0.78em; margin-top:6px;" id="payNote">扫码付款 · 备注订单号</p>
+                
+                <!-- PayPal Section -->
+                <div class="paypal-section" id="paypalSection">
+                    <p id="paypalDesc">🌍 <strong>International customers:</strong> Pay with PayPal</p>
+                    <p style="font-size:0.82em;color:#555;margin-top:4px;" id="paypalEmail">📧 Send to: <strong>260083314@163.com</strong></p>
+                    <p style="font-size:0.82em;color:#555;" id="paypalNote">After sending payment, click the button below to confirm</p>
+                    <a href="https://paypal.me/mingtian" target="_blank" class="paypal-btn" id="paypalBtn">💳 Pay with PayPal</a>
                 </div>
-                <button class="confirm-pay-btn" id="confirmPayBtn" onclick="confirmPaid()">💳 我已付款</button>
-                <p id="paidNotice" style="display:none;text-align:center;color:#4caf50;font-size:0.85em;font-weight:600;margin-top:8px;">✅ 收款确认中，完整版马上发送！</p>
+
+                <div class="payment-tip" id="deliveryFlow">
+                    <p>📌 交付流程：</p>
+                    <p id="flow1">① 告诉我你的需求 → ② 我出稿 → ③ 满意后付款 → ④ 无限修改</p>
+                </div>
+                <button class="confirm-pay-btn" id="confirmPayBtn" onclick="confirmPaid()"><span id="confirmBtnText">💳 我已付款</span></button>
+                <p id="paidNotice" style="display:none;text-align:center;color:#4caf50;font-size:0.85em;font-weight:600;margin-top:8px;" data-i18n="paidNotice">✅ 收款确认中，完整版马上发送！</p>
             </div>
         </div>
     </div>
 
-    <div class="reminder-bar" id="reminderBar">
-        ⏳ 小天已经为你写好了初稿，查看后满意的话请付款解锁完整版
-        <button onclick="document.getElementById('paymentCard').scrollIntoView({behavior:'smooth'});togglePayment();if(!document.getElementById('paymentBody').classList.contains('open'))togglePayment();">去付款</button>
-    </div>
-
     <div class="input-area">
-        <textarea id="msgInput" rows="1" placeholder="输入你的写作需求..." onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMsg()}"></textarea>
+        <textarea id="msgInput" rows="1" id="inputPlaceholder" placeholder="输入你的写作需求..." onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMsg()}"></textarea>
         <button id="sendBtn" onclick="sendMsg()">➤</button>
     </div>
 
     <script>
+        let currentLang = localStorage.getItem('lang') || 'zh';
         let visitorId = localStorage.getItem('visitor_id') || 'v_' + Date.now() + '_' + Math.random().toString(36).slice(2,8);
         localStorage.setItem('visitor_id', visitorId);
-        
+
+        const i18n = {
+            zh: {
+                title: '✍️ 小天 · AI写作',
+                sub: '24小时在线 · 无限修改 · 先写后付',
+                welcome: '嗨！我是小天，你的AI写作助手 ✨<br><br>告诉我你想写什么，我马上帮你搞定！',
+                svcTitle: '📝 我能帮你写：',
+                svc1: '小红书文案、公众号文章、推广文案',
+                svc2: '商业计划书、演讲稿、简历',
+                svc3: '工作总结、情感故事、品牌故事',
+                svc4: '任何文字需求，说说就行！',
+                p1n: '短文', p1p: '¥49', p1d: '≤500字',
+                p2n: '标准', p2p: '¥99', p2d: '500-1500字',
+                p3n: '长文', p3p: '¥199', p3d: '1500-3000字',
+                p4n: '深度', p4p: '¥299', p4d: '3000-5000字',
+                bulk: '批量订单私聊报价更优惠',
+                payHeader: '💰 满意后再付款',
+                payDesc: '先写稿，满意后扫码付款👇',
+                wx: '微信支付', ali: '支付宝',
+                payNote: '扫码付款 · 备注订单号',
+                paypalDesc: '🌍 海外客户：使用PayPal付款',
+                paypalEmail: '📧 发送到：260083314@163.com',
+                paypalNote: '付款后点击下方按钮确认',
+                paypalBtn: '💳 通过PayPal付款',
+                flowTitle: '📌 交付流程：',
+                flow1: '① 告诉我你的需求 → ② 我出稿 → ③ 满意后付款 → ④ 无限修改',
+                confirmBtn: '💳 我已付款',
+                paidNotice: '✅ 收款确认中，完整版马上发送！',
+                reminder: '⏳ 小天已经为你写好了初稿，查看后满意的话请付款解锁完整版',
+                inputPh: '输入你的写作需求...',
+                goPay: '去付款',
+                msgSent: '收到你的消息啦！✍️ 我正在看你的需求，稍等片刻马上回复你～',
+                msgFail: '抱歉，消息发送失败，请重试 🙏'
+            },
+            en: {
+                title: '✍️ XiaoTian · AI Writing',
+                sub: '24/7 Online · Unlimited Revisions · Pay After Satisfaction',
+                welcome: 'Hi! I\'m XiaoTian, your AI writing assistant ✨<br><br>Tell me what you need written, and I\'ll get it done!',
+                svcTitle: '📝 I can write:',
+                svc1: 'Social media posts, blog articles, marketing copy',
+                svc2: 'Business plans, speeches, resumes',
+                svc3: 'Work summaries, stories, brand narratives',
+                svc4: 'Anything text-related - just tell me!',
+                p1n: 'Short', p1p: '$7', p1d: '≤500 words',
+                p2n: 'Standard', p2p: '$14', p2d: '500-1500 words',
+                p3n: 'Long', p3p: '$28', p3d: '1500-3000 words',
+                p4n: 'In-Depth', p4p: '$42', p4d: '3000-5000 words',
+                bulk: 'Bulk orders: DM for special pricing',
+                payHeader: '💰 Pay After Satisfaction',
+                payDesc: 'Preview first, pay if satisfied 👇',
+                wx: 'WeChat Pay', ali: 'Alipay',
+                payNote: 'Scan to pay · Include order number',
+                paypalDesc: '🌍 International customers: Pay with PayPal',
+                paypalEmail: '📧 Send to: 260083314@163.com',
+                paypalNote: 'After sending payment, click the button below to confirm',
+                paypalBtn: '💳 Pay with PayPal',
+                flowTitle: '📌 How it works:',
+                flow1: '① Tell me your needs → ② I write it → ③ Pay if satisfied → ④ Free revisions',
+                confirmBtn: '💳 I\'ve Paid',
+                paidNotice: '✅ Payment confirmed! Full version coming right up!',
+                reminder: '⏳ Your draft is ready! If satisfied, please complete payment to unlock the full version',
+                inputPh: 'Describe what you need written...',
+                goPay: 'Pay Now',
+                msgSent: 'Got your message! ✍️ Let me take a look and I\'ll get back to you shortly~',
+                msgFail: 'Sorry, message failed to send. Please try again 🙏'
+            }
+        };
+
+        function switchLang(lang) {
+            currentLang = lang;
+            localStorage.setItem('lang', lang);
+            document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.dataset.lang === lang));
+            applyLang(lang);
+        }
+
+        function applyLang(lang) {
+            const t = i18n[lang];
+            document.getElementById('siteTitle').textContent = t.title;
+            document.getElementById('siteSub').textContent = t.sub;
+            document.getElementById('welcomeMsg').innerHTML = t.welcome;
+            document.getElementById('serviceTitle').textContent = t.svcTitle;
+            document.querySelectorAll('#serviceList li').forEach((li, i) => {
+                li.textContent = t['svc' + (i+1)];
+            });
+            document.getElementById('p1n').textContent = t.p1n;
+            document.getElementById('p1p').textContent = t.p1p;
+            document.getElementById('p1d').textContent = t.p1d;
+            document.getElementById('p2n').textContent = t.p2n;
+            document.getElementById('p2p').textContent = t.p2p;
+            document.getElementById('p2d').textContent = t.p2d;
+            document.getElementById('p3n').textContent = t.p3n;
+            document.getElementById('p3p').textContent = t.p3p;
+            document.getElementById('p3d').textContent = t.p3d;
+            document.getElementById('p4n').textContent = t.p4n;
+            document.getElementById('p4p').textContent = t.p4p;
+            document.getElementById('p4d').textContent = t.p4d;
+            document.getElementById('bulkTip').textContent = t.bulk;
+            document.getElementById('payHeader').textContent = t.payHeader;
+            document.getElementById('payDesc').textContent = t.payDesc;
+            document.getElementById('wxLabel').textContent = t.wx;
+            document.getElementById('aliLabel').textContent = t.ali;
+            document.getElementById('payNote').textContent = t.payNote;
+            document.getElementById('paypalDesc').innerHTML = t.paypalDesc;
+            document.getElementById('paypalEmail').innerHTML = '📧 Send to: <strong>260083314@163.com</strong>';
+            document.getElementById('paypalNote').textContent = t.paypalNote;
+            document.getElementById('paypalBtn').textContent = t.paypalBtn;
+            document.getElementById('deliveryFlow').querySelector('p').textContent = t.flowTitle;
+            document.getElementById('flow1').textContent = t.flow1;
+            document.getElementById('confirmBtnText').textContent = t.confirmBtn;
+            document.getElementById('paidNotice').textContent = t.paidNotice;
+            document.getElementById('reminderText').textContent = t.reminder;
+            document.getElementById('reminderBtn').textContent = t.goPay;
+            document.getElementById('msgInput').placeholder = t.inputPh;
+        }
+
+        // Apply saved language
+        switchLang(localStorage.getItem('lang') || 'zh');
+
         const chatArea = document.getElementById('chatArea');
         const msgInput = document.getElementById('msgInput');
         const sendBtn = document.getElementById('sendBtn');
@@ -146,7 +284,7 @@
             const div = document.createElement('div');
             div.className = 'typing';
             div.id = 'typing';
-            div.textContent = '小天正在输入...';
+            div.textContent = currentLang === 'zh' ? '小天正在输入...' : 'XiaoTian is typing...';
             chatArea.appendChild(div);
             chatArea.scrollTop = chatArea.scrollHeight;
         }
@@ -175,36 +313,34 @@
                 
                 removeTyping();
                 if (data.ok) {
-                    addMessage('bot', '收到你的消息啦！✍️ 我正在看你的需求，稍等片刻马上回复你～');
+                    const t = i18n[currentLang];
+                    addMessage('bot', currentLang === 'zh' ? t.msgSent : t.msgSent);
                 }
             } catch(e) {
                 removeTyping();
-                addMessage('bot', '抱歉，消息发送失败，请重试 🙏');
+                addMessage('bot', currentLang === 'zh' ? i18n.zh.msgFail : i18n.en.msgFail);
             }
             sendBtn.disabled = false;
             msgInput.focus();
         }
 
-        // Load existing messages
         async function loadMessages() {
             try {
                 const res = await fetch('/api/messages/' + visitorId);
                 const msgs = await res.json();
                 if (msgs.length > 0) {
-                    // Remove welcome card if has history
                     const cards = chatArea.querySelectorAll('.welcome-card');
                     cards.forEach(c => c.remove());
-                    
-                    // Remove the initial bot greeting
                     const bots = chatArea.querySelectorAll('.msg.bot');
                     bots.forEach(b => b.remove());
-                    
                     msgs.forEach(m => addMessage(m.role === 'user' ? 'user' : 'bot', m.content));
                 }
             } catch(e) {}
         }
+
         async function confirmPaid() {
-            if (confirm('确认已付款？将为你解锁完整文稿。')) {
+            const t = i18n[currentLang];
+            if (confirm(currentLang === 'zh' ? '确认已付款？将为你解锁完整文稿。' : 'Confirm payment? Full document will be delivered.')) {
                 try {
                     await fetch('/api/paid', {
                         method: 'POST',
@@ -213,15 +349,31 @@
                     });
                     document.getElementById('confirmPayBtn').style.display = 'none';
                     document.getElementById('paidNotice').style.display = 'block';
-                } catch(e) { alert('操作失败，请重试'); }
+                } catch(e) { alert(currentLang === 'zh' ? '操作失败，请重试' : 'Operation failed, please try again'); }
             }
         }
+
         function togglePayment() {
             const body = document.getElementById('paymentBody');
             const icon = document.querySelector('.toggle-icon');
             body.classList.toggle('open');
             icon.textContent = body.classList.contains('open') ? '▲' : '▼';
         }
+
+        function goPay() {
+            document.getElementById('paymentCard').scrollIntoView({behavior:'smooth'});
+            const body = document.getElementById('paymentBody');
+            const icon = document.querySelector('.toggle-icon');
+            if (!body.classList.contains('open')) {
+                body.classList.add('open');
+                icon.textContent = '▲';
+            }
+        }
+
+        function showReminder() {
+            document.getElementById('reminderBar').classList.add('show');
+        }
+
         loadMessages();
     </script>
 </body>
