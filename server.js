@@ -1,52 +1,64 @@
-const http = require('http');
-const fs = require('fs');
+const express = require('express');
 const path = require('path');
+const fs = require('fs');
+const app = express();
+const PORT = 80;
+const MESSAGES_FILE = '/data/messages.json';
 
-const PORT = process.env.PORT || 80;
-const STATIC_DIR = __dirname;
+app.use(express.json());
+app.use(express.static(path.join(__dirname, 'public')));
 
-const MIME = {
-  '.html': 'text/html; charset=utf-8',
-  '.css': 'text/css',
-  '.js': 'text/javascript',
-  '.json': 'application/json',
-  '.png': 'image/png',
-  '.jpg': 'image/jpeg',
-  '.jpeg': 'image/jpeg',
-  '.gif': 'image/gif',
-  '.svg': 'image/svg+xml',
-  '.ico': 'image/x-icon',
-};
-
-function serveFile(res, filePath) {
-  const ext = path.extname(filePath);
-  fs.readFile(filePath, (err, data) => {
-    if (err) {
-      res.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8' });
-      res.end('404 Not Found');
-      return;
-    }
-    res.writeHead(200, { 'Content-Type': MIME[ext] || 'application/octet-stream' });
-    res.end(data);
-  });
+// Ensure messages file exists
+if (!fs.existsSync('/data')) {
+  fs.mkdirSync('/data', { recursive: true });
+}
+if (!fs.existsSync(MESSAGES_FILE)) {
+  fs.writeFileSync(MESSAGES_FILE, JSON.stringify({ visitors: [], conversations: {} }));
 }
 
-const server = http.createServer((req, res) => {
-  const url = new URL(req.url, 'http://localhost');
-  let filePath;
-  
-  if (url.pathname === '/') {
-    filePath = path.join(STATIC_DIR, 'landing.html');
-    if (!fs.existsSync(filePath)) {
-      filePath = path.join(STATIC_DIR, 'index.html');
-    }
-  } else {
-    filePath = path.join(STATIC_DIR, url.pathname);
-  }
-  
-  serveFile(res, filePath);
+// Serve the main page
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-server.listen(PORT, () => {
-  console.log('Server running on port', PORT);
+// Save a visitor's message
+app.post('/api/message', (req, res) => {
+  const { name, contact, content } = req.body;
+  if (!content) return res.status(400).json({ error: 'content required' });
+
+  const ts = Date.now();
+  const visitorId = req.headers['x-visitor-id'] || 'anon-' + ts;
+  const data = JSON.parse(fs.readFileSync(MESSAGES_FILE, 'utf8'));
+
+  if (!data.conversations[visitorId]) {
+    data.conversations[visitorId] = { name: name || '访客', contact: contact || '', messages: [] };
+    if (!data.visitors.includes(visitorId)) data.visitors.push(visitorId);
+  }
+
+  data.conversations[visitorId].messages.push({
+    role: 'user',
+    content,
+    ts
+  });
+
+  // Auto-reply with a welcome / processing message
+  data.conversations[visitorId].messages.push({
+    role: 'assistant',
+    content: '收到你的消息啦！✍️ 我正在看你的需求，稍等片刻马上回复你～',
+    ts: Date.now()
+  });
+
+  fs.writeFileSync(MESSAGES_FILE, JSON.stringify(data, null, 2));
+  res.json({ ok: true, visitorId });
+});
+
+// Get messages for a visitor
+app.get('/api/messages/:visitorId', (req, res) => {
+  const data = JSON.parse(fs.readFileSync(MESSAGES_FILE, 'utf8'));
+  const conv = data.conversations[req.params.visitorId];
+  res.json(conv ? conv.messages : []);
+});
+
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });
