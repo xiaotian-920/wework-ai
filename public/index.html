@@ -48,6 +48,12 @@
         .qr-row { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
         .qr-item { flex: 1; min-width: 140px; max-width: 240px; }
         .payment-tip { background: #f0f8ff; border-radius: 8px; padding: 12px; margin-top: 12px; font-size: 0.82em; color: #555; line-height: 1.8; }
+        .confirm-pay-btn { display: block; width: 100%; background: linear-gradient(135deg, #f5af19, #f12711); color: white; border: none; border-radius: 8px; padding: 12px; font-size: 0.95em; font-weight: 700; cursor: pointer; margin-top: 10px; letter-spacing: 2px; }
+        .confirm-pay-btn:hover { opacity: 0.9; }
+        .paid-badge { display: inline-block; background: #4caf50; color: white; border-radius: 4px; padding: 2px 10px; font-size: 0.75em; font-weight: 600; }
+        .reminder-bar { background: #fff3cd; color: #856404; padding: 10px 16px; font-size: 0.82em; display: none; align-items: center; gap: 8px; border-bottom: 1px solid #ffeeba; }
+        .reminder-bar.show { display: flex; }
+        .reminder-bar button { background: #e94560; color: white; border: none; border-radius: 6px; padding: 6px 14px; font-size: 0.82em; cursor: pointer; margin-left: auto; flex-shrink: 0; }
         @media (max-width: 400px) { .price-grid { grid-template-columns: 1fr; } }
     </style>
 </head>
@@ -100,8 +106,15 @@
                     <p>📌 交付流程：</p>
                     <p>① 告诉我你的需求 → ② 我出稿 → ③ 满意后付款 → ④ 无限修改</p>
                 </div>
+                <button class="confirm-pay-btn" id="confirmPayBtn" onclick="confirmPaid()">💳 我已付款</button>
+                <p id="paidNotice" style="display:none;text-align:center;color:#4caf50;font-size:0.85em;font-weight:600;margin-top:8px;">✅ 收款确认中，完整版马上发送！</p>
             </div>
         </div>
+    </div>
+
+    <div class="reminder-bar" id="reminderBar">
+        ⏳ 小天已经为你写好了初稿，查看后满意的话请付款解锁完整版
+        <button onclick="document.getElementById('paymentCard').scrollIntoView({behavior:'smooth'});togglePayment();if(!document.getElementById('paymentBody').classList.contains('open'))togglePayment();">去付款</button>
     </div>
 
     <div class="input-area">
@@ -189,6 +202,19 @@
                     msgs.forEach(m => addMessage(m.role === 'user' ? 'user' : 'bot', m.content));
                 }
             } catch(e) {}
+        }
+        async function confirmPaid() {
+            if (confirm('确认已付款？将为你解锁完整文稿。')) {
+                try {
+                    await fetch('/api/paid', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ visitorId })
+                    });
+                    document.getElementById('confirmPayBtn').style.display = 'none';
+                    document.getElementById('paidNotice').style.display = 'block';
+                } catch(e) { alert('操作失败，请重试'); }
+            }
         }
         function togglePayment() {
             const body = document.getElementById('paymentBody');
