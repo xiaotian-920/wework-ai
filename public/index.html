@@ -38,6 +38,14 @@
         .price-item .price { font-size: 1.2em; font-weight: 700; color: #e94560; margin: 2px 0; }
         .price-item .desc { font-size: 0.75em; color: #999; }
         
+        .payment-card { background: white; border-radius: 12px; margin-top: 8px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); overflow: hidden; }
+        .payment-header { padding: 14px 20px; cursor: pointer; font-size: 0.92em; font-weight: 600; color: #1a1a2e; display: flex; justify-content: space-between; align-items: center; user-select: none; }
+        .payment-header:hover { background: #f8f9fa; }
+        .toggle-icon { transition: transform 0.3s; font-size: 0.85em; }
+        .payment-body { padding: 0 20px 20px; display: none; }
+        .payment-body.open { display: block; }
+        .payment-qr { width: 100%; max-width: 280px; border-radius: 8px; display: block; margin: 0 auto; cursor: pointer; border: 2px solid #eee; }
+        .payment-tip { background: #f0f8ff; border-radius: 8px; padding: 12px; margin-top: 12px; font-size: 0.82em; color: #555; line-height: 1.8; }
         @media (max-width: 400px) { .price-grid { grid-template-columns: 1fr; } }
     </style>
 </head>
@@ -68,6 +76,20 @@
                 <div class="price-item"><div class="name">深度</div><div class="price">¥299</div><div class="desc">3000-5000字</div></div>
             </div>
             <p style="text-align:center;margin-top:8px;color:#999;font-size:0.8em;">批量订单私聊报价更优惠</p>
+        </div>
+        <div class="payment-card" id="paymentCard">
+            <div class="payment-header" onclick="togglePayment()">
+                💰 满意后再付款 &nbsp;<span class="toggle-icon">▼</span>
+            </div>
+            <div class="payment-body" id="paymentBody">
+                <p style="text-align:left; color:#555; font-size:0.88em; margin-bottom:10px;">先写稿，满意后扫码付款👇</p>
+                <img src="/payment_qr.jpg" alt="微信收款码" class="payment-qr" onclick="window.open('/payment_qr.jpg','_blank')">
+                <p style="text-align:center; color:#888; font-size:0.78em; margin-top:6px;">微信扫码 · 备注订单号</p>
+                <div class="payment-tip">
+                    <p>📌 交付流程：</p>
+                    <p>① 告诉我你的需求 → ② 我出稿 → ③ 满意后付款 → ④ 无限修改</p>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -156,6 +178,12 @@
                     msgs.forEach(m => addMessage(m.role === 'user' ? 'user' : 'bot', m.content));
                 }
             } catch(e) {}
+        }
+        function togglePayment() {
+            const body = document.getElementById('paymentBody');
+            const icon = document.querySelector('.toggle-icon');
+            body.classList.toggle('open');
+            icon.textContent = body.classList.contains('open') ? '▲' : '▼';
         }
         loadMessages();
     </script>
