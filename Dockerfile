@@ -12,4 +12,4 @@ WORKDIR /data
 
 EXPOSE 49982 80
 
-CMD ["openclaw", "gateway"]
+CMD ["openclaw", "--allow-unconfigured", "gateway"]
