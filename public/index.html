@@ -44,7 +44,9 @@
         .toggle-icon { transition: transform 0.3s; font-size: 0.85em; }
         .payment-body { padding: 0 20px 20px; display: none; }
         .payment-body.open { display: block; }
-        .payment-qr { width: 100%; max-width: 280px; border-radius: 8px; display: block; margin: 0 auto; cursor: pointer; border: 2px solid #eee; }
+        .payment-qr { width: 100%; max-width: 220px; border-radius: 8px; display: block; margin: 0 auto; cursor: pointer; border: 2px solid #eee; }
+        .qr-row { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+        .qr-item { flex: 1; min-width: 140px; max-width: 240px; }
         .payment-tip { background: #f0f8ff; border-radius: 8px; padding: 12px; margin-top: 12px; font-size: 0.82em; color: #555; line-height: 1.8; }
         @media (max-width: 400px) { .price-grid { grid-template-columns: 1fr; } }
     </style>
@@ -83,8 +85,17 @@
             </div>
             <div class="payment-body" id="paymentBody">
                 <p style="text-align:left; color:#555; font-size:0.88em; margin-bottom:10px;">先写稿，满意后扫码付款👇</p>
-                <img src="/payment_qr.jpg" alt="微信收款码" class="payment-qr" onclick="window.open('/payment_qr.jpg','_blank')">
-                <p style="text-align:center; color:#888; font-size:0.78em; margin-top:6px;">微信扫码 · 备注订单号</p>
+                <div class="qr-row">
+                    <div class="qr-item">
+                        <img src="/wechat_qr.jpg" alt="微信收款码" class="payment-qr">
+                        <p style="text-align:center; color:#888; font-size:0.75em; margin-top:4px;">💚 微信支付</p>
+                    </div>
+                    <div class="qr-item">
+                        <img src="/alipay_qr.jpg" alt="支付宝收款码" class="payment-qr">
+                        <p style="text-align:center; color:#888; font-size:0.75em; margin-top:4px;">💙 支付宝</p>
+                    </div>
+                </div>
+                <p style="text-align:center; color:#888; font-size:0.78em; margin-top:6px;">扫码付款 · 备注订单号</p>
                 <div class="payment-tip">
                     <p>📌 交付流程：</p>
                     <p>① 告诉我你的需求 → ② 我出稿 → ③ 满意后付款 → ④ 无限修改</p>
