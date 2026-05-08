@@ -11,8 +11,9 @@ RUN npm install -g openclaw@latest
 RUN mkdir -p /root/.openclaw
 RUN echo '{"commands":{"native":"auto","nativeSkills":"auto","restart":true},"tools":{"profile":"full"},"gateway":{"mode":"local","port":49982,"controlUi":{"allowedOrigins":["null","https://wework-ai-production.up.railway.app"]},"auth":{"mode":"token","token":"openclaw1234"}},"plugins":{"entries":{}},"skills":{"entries":{}}}' > /root/.openclaw/openclaw.json
 
-WORKDIR /data
+WORKDIR /app
+COPY . .
 
-EXPOSE 49982
+EXPOSE 80
 
-CMD ["openclaw", "gateway"]
+CMD ["node", "server.js"]
